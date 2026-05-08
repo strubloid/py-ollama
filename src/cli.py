@@ -9,7 +9,6 @@ import sys
 
 import helpers
 import models
-import ai.ollama
 import ai.modelfile
 
 
@@ -47,28 +46,10 @@ def main() -> int:
         print(modelfile_content)
         print("=" * 60)
 
-        confirm = input(
-            f"\nProceed to create model '{new_model_name}'? (yes/no): "
-        ).strip().lower()
-        if confirm not in ("yes", "y"):
-            print("Cancelled. Exiting.")
-            return 0
-
-        print(f"\nCreating model '{new_model_name}'...")
-
-        with ai.modelfile.TemporaryModelfile(modelfile_content) as tmp_path:
-            ai.ollama.create_model(new_model_name, tmp_path)
-
-        print(
-            f"\n✓ Model '{new_model_name}' created successfully!\n"
-            f"Try it with: ollama run {new_model_name}"
-        )
+        helpers.confirm_and_create_model(new_model_name, modelfile_content)
 
         return 0
 
-    except ai.ollama.OllamaError as e:
-        print(f"\nError: {e}")
-        return 1
     except ai.modelfile.ModelfileError as e:
         print(f"\nError: {e}")
         return 1

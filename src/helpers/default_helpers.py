@@ -1,6 +1,7 @@
 from typing import Optional
 
 import ai.ollama
+import ai.modelfile
 
 
 class UserCancelledError(Exception):
@@ -146,3 +147,31 @@ def validate_ollama() -> list[str]:
         )
 
     return available_models
+
+
+def confirm_and_create_model(model_name: str, modelfile_content: str) -> None:
+    """
+    Prompt user for confirmation, create model, and print result.
+
+    Args:
+        model_name: Name for the new model.
+        modelfile_content: Content for the Modelfile.
+
+    Raises:
+        UserCancelledError: If user declines confirmation.
+    """
+    confirm = input(
+        f"\nProceed to create model '{model_name}'? (yes/no): "
+    ).strip().lower()
+    if confirm not in ("yes", "y"):
+        raise UserCancelledError()
+
+    print(f"\nCreating model '{model_name}'...")
+
+    with ai.modelfile.TemporaryModelfile(modelfile_content) as tmp_path:
+        ai.ollama.create_model(model_name, tmp_path)
+
+    print(
+        f"\n✓ Model '{model_name}' created successfully!\n"
+        f"Try it with: ollama run {model_name}"
+    )

@@ -1,6 +1,7 @@
 from .default_helpers import (
-    display_menu,
+    confirm_and_create_model,
     display_config_options,
+    display_menu,
     format_table,
     get_string_input,
     validate_config_selection,
@@ -9,8 +10,9 @@ from .default_helpers import (
 )
 
 __all__ = [
-    "display_menu",
+    "confirm_and_create_model",
     "display_config_options",
+    "display_menu",
     "format_table",
     "get_string_input",
     "validate_config_selection",
