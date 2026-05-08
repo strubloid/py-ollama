@@ -1,15 +1,16 @@
 """
 Interactive command-line interface for creating customized Ollama models.
 
-Provides the main entry point and interactive flow for the tool.
+Provides the main entry point and interactive flow for the tool with
+model-specific configurations optimized for each model family.
 """
 
 import sys
 from typing import Optional
 
-from . import presets as presets_module
-from . import ollama
-from . import modelfile
+import models
+import ollama
+import modelfile
 
 
 def display_menu(items: list[str], title: str = "") -> Optional[str]:
@@ -107,30 +108,43 @@ def main() -> int:
     new_model_name = get_string_input("Enter new model name: ")
     print(f"✓ New model name: {new_model_name}")
 
-    # Step 5: Select configuration preset
-    preset_names = presets_module.list_preset_names()
+    # Step 5: Detect model family and get configurations
     print("\n" + "=" * 60)
-    selected_preset_name = display_menu(
-        preset_names,
-        title="Select configuration preset:",
-    )
-    if not selected_preset_name:
-        print("No preset selected. Exiting.")
+    model_configs = models.OllamaModelConfigs.get_configs_for_model(selected_model)
+    config_options = list(model_configs.keys())
+    
+    # Display which model was detected
+    model_family = models.OllamaModelConfigs.detect_model_family(selected_model)
+    print(f"\n📍 Detected model family: {model_family}")
+    print("Available configurations for this model:")
+    
+    config_names = [model_configs[opt].name for opt in config_options]
+    selected_config_name = display_menu(config_names)
+    
+    if not selected_config_name:
+        print("No configuration selected. Exiting.")
         return 1
 
-    selected_preset = presets_module.get_preset_by_name(selected_preset_name)
-    if not selected_preset:
-        print(f"Error: Preset '{selected_preset_name}' not found.")
+    # Find which config was selected
+    selected_config_key = None
+    for key, config in model_configs.items():
+        if config.name == selected_config_name:
+            selected_config_key = key
+            break
+    
+    if not selected_config_key:
+        print("Error: Configuration not found.")
         return 1
 
-    print(f"✓ Selected preset: {selected_preset.name}")
+    selected_config = model_configs[selected_config_key]
+    print(f"✓ Selected configuration: {selected_config.name}")
 
     # Step 6: Build Modelfile content
     try:
         modelfile_content = modelfile.build_modelfile_content(
             base_model=selected_model,
-            config_params=selected_preset.config,
-            system_prompt=selected_preset.system,
+            config_params=selected_config.config,
+            system_prompt=selected_config.system,
         )
     except modelfile.ModelfileError as e:
         print(f"\nError building Modelfile: {e}")
@@ -161,6 +175,20 @@ def main() -> int:
             f"\n✓ Model '{new_model_name}' created successfully!\n"
             f"Try it with: ollama run {new_model_name}"
         )
+
+        # Step 10: Optional - Show generated Modelfile for double-check
+        print("\n" + "=" * 60)
+        show_content = input(
+            "Would you like to review the generated Modelfile? (yes/no): "
+        ).strip().lower()
+        if show_content in ("yes", "y"):
+            print("=" * 60)
+            print("Generated Modelfile:")
+            print("=" * 60)
+            print(modelfile_content)
+            print("=" * 60)
+            print()
+
         return 0
     except ollama.OllamaError as e:
         print(f"\nError creating model: {e}")
