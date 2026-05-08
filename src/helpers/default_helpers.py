@@ -6,11 +6,86 @@ import ai.ollama
 class UserCancelledError(Exception):
     pass
 
+
+def format_table(headers: list[str], rows: list[list[str]], col_padding: int = 2) -> str:
+    """Format data as a text table."""
+    if not rows:
+        return ""
+
+    col_widths = [len(h) for h in headers]
+    for row in rows:
+        for i, cell in enumerate(row):
+            col_widths[i] = max(col_widths[i], len(str(cell)))
+
+    lines = []
+
+    header_line = "  ".join(
+        h.ljust(col_widths[i]) for i, h in enumerate(headers)
+    )
+    lines.append(header_line)
+
+    separator = "  ".join("-" * w for w in col_widths)
+    lines.append(separator)
+
+    for row in rows:
+        row_line = "  ".join(
+            str(cell).ljust(col_widths[i]) for i, cell in enumerate(row)
+        )
+        lines.append(row_line)
+
+    return "\n".join(lines)
+
 ## This will be used to display menus and get user input in the CLI.
 ## The display_menu function shows a numbered list of options and prompts 
 # the user to select one by entering the corresponding number. 
 # It validates the input and returns the selected item.
-def display_menu(items: list[str], title: str = "") -> str:
+def display_config_options(model_configs: dict) -> str:
+    """
+    Display model configurations as a formatted table and return selection.
+
+    Args:
+        model_configs: Dictionary of config options with ModelConfig values.
+
+    Returns:
+        Selected config key.
+    """
+    headers = ["#", "Name", "num_ctx", "temperature", "num_predict"]
+    rows = []
+    config_list = list(model_configs.items())
+
+    for i, (key, cfg) in enumerate(config_list, 1):
+        params = cfg.get_params_table()
+        param_dict = {name: value for name, value in params}
+
+        rows.append([
+            str(i),
+            cfg.name,
+            param_dict.get("num_ctx", "-"),
+            param_dict.get("temperature", "-"),
+            param_dict.get("num_predict", "-"),
+        ])
+
+    print("\nAvailable configurations:")
+    print(format_table(headers, rows))
+    print()
+
+    while True:
+        try:
+            choice = input("Select configuration (number): ").strip()
+            if choice == "":
+                raise UserCancelledError()
+            choice_num = int(choice)
+            if 1 <= choice_num <= len(config_list):
+                return config_list[choice_num - 1][0]
+            else:
+                print(f"Please enter a number between 1 and {len(config_list)}.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+        except (EOFError, KeyboardInterrupt):
+            raise UserCancelledError()
+
+
+def display_menu(items: list[str], title: str = "", show_table: bool = False, table_headers: list[str] = None, table_rows: list[list[str]] = None) -> str:
     if title:
         print(f"\n{title}")
 

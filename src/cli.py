@@ -19,25 +19,21 @@ def main() -> int:
     print("=" * 60)
 
     try:
-
+        
         available_models = helpers.validate_ollama()
         print("\n" + "=" * 60)
 
         selected_model = helpers.display_menu(available_models, title="Select base model:")
         print("\n" + "=" * 60)
         new_model_name = helpers.get_string_input("Enter new model name: ")
+
         model_configs = models.get_configs_for_model(selected_model)
-        config_options = list(model_configs.keys())
         model_family = models.detect_model_family(selected_model)
         print(f"\n📍 Detected model family: {model_family}")
 
-        config_names = [model_configs[opt].name for opt in config_options]
-        selected_config_name = helpers.display_menu(config_names, title="Available configurations:")
-
-        selected_config_key = helpers.validate_config_selection(model_configs, selected_config_name)
-
+        selected_config_key = helpers.display_config_options(model_configs)
         selected_config = model_configs[selected_config_key]
-        print(f"✓ Selected configuration: {selected_config.name}")
+        print(f"\n✓ Selected configuration: {selected_config.name}")
 
         modelfile_content = ai.modelfile.build_modelfile_content(
             base_model=selected_model,
