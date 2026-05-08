@@ -1,24 +1,41 @@
 # Contributing
 
-Thank you for your interest in contributing to Ollama Tweak Advanced!
+Thank you for your interest in contributing to Py Ollama!
 
 ## Development Setup
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/ollama-tweak-advanced.git
-   cd ollama-tweak-advanced
-   ```
+
+    ```bash
+    git clone [https://github.com/yourusername/ollama-tweak-advanced.git](https://github.com/strubloid/py-ollama.git)
+    cd py-ollama
+    ```
 
 2. Install in development mode with dependencies:
-   ```bash
-   pip install -e ".[dev]"
-   ```
+
+    Loading the virtual environment and installing with development dependencies with:
+
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    ```
+
+    Then install the package with development dependencies:
+
+    ```bash
+    pip install -e ".[dev]"
+    ```
+
+    or
+
+    ```bash
+      chmod +x install.sh && ./install.sh
+    ```
 
 3. Verify your setup:
-   ```bash
-   pytest tests/
-   ```
+    ```bash
+    pytest tests/
+    ```
 
 ## Code Quality Standards
 
@@ -33,28 +50,32 @@ We follow these standards:
 ## Making Changes
 
 1. Create a feature branch:
-   ```bash
-   git checkout -b feature/my-feature
-   ```
+
+    ```bash
+    git checkout -b feature/my-feature
+    ```
 
 2. Make your changes and add tests for new functionality
 
 3. Run the full test suite:
-   ```bash
-   pytest tests/ -v
-   ```
+
+    ```bash
+    pytest tests/ -v
+    ```
 
 4. Run code quality checks:
-   ```bash
-   black src/ tests/
-   ruff check src/ tests/
-   mypy src/ollama_tweak_advanced
-   ```
+
+    ```bash
+    black src/ tests/
+    ruff check src/ tests/
+    mypy src/ollama_tweak_advanced
+    ```
 
 5. Commit with clear messages:
-   ```bash
-   git commit -m "Add my feature with clear description"
-   ```
+
+    ```bash
+    git commit -m "Add my feature with clear description"
+    ```
 
 6. Push and create a pull request
 

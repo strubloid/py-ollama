@@ -37,7 +37,8 @@ dev = [
 ]
 
 [tool.setuptools]
-py-modules = ["cli", "modelfile", "ollama", "presets", "models"]
+packages = ["models"]
+py-modules = ["cli", "modelfile", "ollama", "presets"]
 
 [tool.setuptools.package-dir]
 "" = "src"

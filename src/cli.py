@@ -176,19 +176,6 @@ def main() -> int:
             f"Try it with: ollama run {new_model_name}"
         )
 
-        # Step 10: Optional - Show generated Modelfile for double-check
-        print("\n" + "=" * 60)
-        show_content = input(
-            "Would you like to review the generated Modelfile? (yes/no): "
-        ).strip().lower()
-        if show_content in ("yes", "y"):
-            print("=" * 60)
-            print("Generated Modelfile:")
-            print("=" * 60)
-            print(modelfile_content)
-            print("=" * 60)
-            print()
-
         return 0
     except ollama.OllamaError as e:
         print(f"\nError creating model: {e}")
