@@ -1,6 +1,6 @@
 from typing import Optional
 
-import ollama
+import ai.ollama
 
 
 class UserCancelledError(Exception):
@@ -54,18 +54,19 @@ def validate_config_selection(model_configs: dict, selected_config_name: str) ->
         raise ValueError("Configuration not found.")
     return config_key
 
-
+## This function checks if Ollama is installed and retrieves the list of available models.
+## It raises exceptions if Ollama is not installed or if no models are found, which are handled in the main function to provide feedback to the user.
 def validate_ollama() -> list[str]:
-    if not ollama.check_ollama_installed():
-        raise ollama.OllamaError(
+    if not ai.ollama.check_ollama_installed():
+        raise ai.ollama.OllamaError(
             "'ollama' command not found.\n"
             "Please install Ollama from https://ollama.ai"
         )
 
-    available_models = ollama.get_available_models()
+    available_models = ai.ollama.get_available_models()
 
     if not available_models:
-        raise ollama.OllamaError(
+        raise ai.ollama.OllamaError(
             "No models found. Please pull a model first with: ollama pull <model>"
         )
 
