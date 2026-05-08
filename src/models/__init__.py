@@ -40,7 +40,7 @@ class OllamaModelConfigs:
         Returns:
             Model family name (lowercase)
         """
-        base = model_name.lower().split(':')[0]
+        base = model_name.lower().split(':')[0]        
         return base
     
     @staticmethod
