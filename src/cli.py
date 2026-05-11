@@ -3,6 +3,7 @@ Interactive command-line interface for creating customized Ollama models.
 
 Provides the main entry point and interactive flow for the tool with
 model-specific configurations optimized for each model family.
+Supports both interactive and inline modes.
 """
 
 import sys
@@ -10,16 +11,20 @@ import sys
 import ai
 import helpers
 from ai.models import get_configs_for_model, detect_model_family
+from helpers.cli_args import is_inline_mode, parse_arguments, run_inline
 
 
 def main() -> int:
     try:
-        # Display the main menu
+        if is_inline_mode():
+            args = parse_arguments()
+            return run_inline(args)
+
+        # Interactive mode
         print("=" * 60)
         print("Ollama Tweak Advanced V2.0 - Create Customized Models")
         print("=" * 60)
-        
-        ## loading models
+
         available_models = helpers.validate_ollama()
 
         ## selecting a model
