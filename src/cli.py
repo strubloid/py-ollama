@@ -29,7 +29,7 @@ def main() -> int:
         new_model_name = helpers.get_string_input("New tweaked model name: ")
 
         # get model family and configurations
-        model_configs = models.get_configs_for_model(selected_model)
+        model_configs = models.get_configs_for_model(selected_model, new_model_name)
         model_family = models.detect_model_family(selected_model)
         print(f"==> Model: {model_family}")
 

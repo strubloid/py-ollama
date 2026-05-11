@@ -8,6 +8,7 @@ class Gemma(BaseModelFamily):
     """Gemma model configurations."""
 
     family_name = "Gemma"
+    model_name = "Eggy"
 
     def model_profile(self) -> str:
         return "Gemma is Google's compact but powerful model optimized for efficiency and instruction following."
@@ -17,8 +18,8 @@ class Gemma(BaseModelFamily):
             return base_system
         return f"{base_system}\n\n---\n\n{extension}"
 
-    def normal(self):
-        extension = """[Gemma Normal Mode]
+    def normal(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Follow instructions precisely
 - Be concise but complete
 - Use structured responses when helpful
@@ -30,8 +31,8 @@ class Gemma(BaseModelFamily):
             system=self._build_system(NORMAL_SYSTEM, extension),
         )
 
-    def coder(self):
-        extension = """[Gemma Coder Mode]
+    def coder(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Write efficient, clean code
 - Use modern best practices
 - Prioritize readability
@@ -45,8 +46,8 @@ class Gemma(BaseModelFamily):
             system=self._build_system(CODER_SYSTEM, extension),
         )
 
-    def coder_fast(self):
-        extension = """[Gemma Coder Fast Mode]
+    def coder_fast(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Quick, working solutions
 - Minimal complexity
 - Focus on correctness
@@ -58,8 +59,8 @@ class Gemma(BaseModelFamily):
             system=self._build_system(CODER_FAST_SYSTEM, extension),
         )
 
-    def explained(self):
-        extension = """[Gemma Explained Mode]
+    def explained(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Clear, structured explanations
 - Step-by-step reasoning
 - Practical examples

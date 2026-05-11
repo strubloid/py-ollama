@@ -8,6 +8,7 @@ class Deepseek(BaseModelFamily):
     """Deepseek model configurations."""
 
     family_name = "Deepseek"
+    model_name = "XingLing"
 
     def model_profile(self) -> str:
         return "Deepseek excels at reasoning, mathematics, and complex coding tasks. It has strong chain-of-thought capabilities."
@@ -17,8 +18,8 @@ class Deepseek(BaseModelFamily):
             return base_system
         return f"{base_system}\n\n---\n\n{extension}"
 
-    def normal(self):
-        extension = """[Deepseek Normal Mode]
+    def normal(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Leverage Deepseek's strong reasoning capabilities for problem-solving
 - Break down complex tasks into logical steps
 - Provide clear, structured responses
@@ -31,8 +32,8 @@ class Deepseek(BaseModelFamily):
             system=self._build_system(NORMAL_SYSTEM, extension),
         )
 
-    def coder(self):
-        extension = """[Deepseek Coder Mode]
+    def coder(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Exploit Deepseek's deep code understanding and reasoning
 - Prioritize algorithmic efficiency and optimal solutions
 - Apply rigorous testing and edge case analysis
@@ -47,8 +48,8 @@ class Deepseek(BaseModelFamily):
             system=self._build_system(CODER_SYSTEM, extension),
         )
 
-    def coder_fast(self):
-        extension = """[Deepseek Coder Fast Mode]
+    def coder_fast(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Use Deepseek's fast reasoning for rapid iteration
 - Provide working solutions first, then refine if needed
 - Keep code minimal but correct
@@ -62,8 +63,8 @@ class Deepseek(BaseModelFamily):
             system=self._build_system(CODER_FAST_SYSTEM, extension),
         )
 
-    def explained(self):
-        extension = """[Deepseek Explained Mode]
+    def explained(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Use Deepseek's reasoning strength to explain complex concepts
 - Walk through the "why" behind each decision
 - Break down algorithms and data structures step by step

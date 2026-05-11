@@ -33,37 +33,38 @@ def _get_family_instance(model_name: str):
     return family_class()
 
 
-def get_configs_for_model(model_name: str) -> dict:
+def get_configs_for_model(model_name: str, custom_name: str = "") -> dict:
     """
     Get all configs for a model.
 
     Args:
         model_name: Model name
+        custom_name: Optional custom name for the model (e.g., user-created model name)
 
     Returns:
         Dictionary with all config options (normal, coder, coder_fast, explained)
     """
-    return _get_family_instance(model_name).get_all()
+    return _get_family_instance(model_name).get_all(custom_name)
 
 
-def get_normal_mode(model_name: str) -> ModelConfig:
+def get_normal_mode(model_name: str, custom_name: str = "") -> ModelConfig:
     """Get the normal mode config for a model."""
-    return _get_family_instance(model_name).normal()
+    return _get_family_instance(model_name).normal(custom_name)
 
 
-def get_coder_mode(model_name: str) -> ModelConfig:
+def get_coder_mode(model_name: str, custom_name: str = "") -> ModelConfig:
     """Get the coder mode config for a model."""
-    return _get_family_instance(model_name).coder()
+    return _get_family_instance(model_name).coder(custom_name)
 
 
-def get_coder_fast_mode(model_name: str) -> ModelConfig:
+def get_coder_fast_mode(model_name: str, custom_name: str = "") -> ModelConfig:
     """Get the coder_fast mode config for a model."""
-    return _get_family_instance(model_name).coder_fast()
+    return _get_family_instance(model_name).coder_fast(custom_name)
 
 
-def get_explained_mode(model_name: str) -> ModelConfig:
+def get_explained_mode(model_name: str, custom_name: str = "") -> ModelConfig:
     """Get the explained mode config for a model."""
-    return _get_family_instance(model_name).explained()
+    return _get_family_instance(model_name).explained(custom_name)
 
 
 __all__ = [

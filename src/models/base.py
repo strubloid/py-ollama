@@ -164,13 +164,19 @@ class BaseModelFamily:
 
     modes = ("normal", "coder", "coder_fast", "explained")
     family_name: str = ""
+    model_name: str = ""
 
-    def get_all(self) -> dict[str, ModelConfig]:
+    def get_all(self, custom_name: str = "") -> dict[str, ModelConfig]:
         """Collect all available mode configurations."""
         return {
-            mode: getattr(self, mode)()
+            mode: getattr(self, mode)(custom_name)
             for mode in self.modes
         }
+
+    def getModelName(self, custom_name: str = "") -> str:
+        """Return the model's assigned name with instruction to use it."""
+        name = custom_name if custom_name else self.model_name
+        return f"Identity: You are {name}. Always identify yourself by this name when asked."
 
     def model_profile(self) -> str:
         """Return general model-specific profile. Override in subclasses."""

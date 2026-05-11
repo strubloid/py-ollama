@@ -8,6 +8,7 @@ class Mistral(BaseModelFamily):
     """Mistral/Devstral model configurations."""
 
     family_name = "Mistral"
+    model_name = "Macumba"
 
     def model_profile(self) -> str:
         return "Mistral excels at reasoning and code generation with efficient context handling. Devstral is optimized for developer productivity."
@@ -17,8 +18,8 @@ class Mistral(BaseModelFamily):
             return base_system
         return f"{base_system}\n\n---\n\n{extension}"
 
-    def normal(self):
-        extension = """[Mistral Normal Mode]
+    def normal(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Use efficient, direct communication
 - Leverage Mistral's strong reasoning
 - Provide practical solutions
@@ -30,8 +31,8 @@ class Mistral(BaseModelFamily):
             system=self._build_system(NORMAL_SYSTEM, extension),
         )
 
-    def coder(self):
-        extension = """[Mistral Coder Mode]
+    def coder(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Write optimized, efficient code
 - Use Mistral's context efficiency for large codebases
 - Prioritize performance when needed
@@ -45,8 +46,8 @@ class Mistral(BaseModelFamily):
             system=self._build_system(CODER_SYSTEM, extension),
         )
 
-    def coder_fast(self):
-        extension = """[Mistral Coder Fast Mode]
+    def coder_fast(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Fast, efficient responses
 - Minimal but correct solutions
 - Quick iteration
@@ -58,8 +59,8 @@ class Mistral(BaseModelFamily):
             system=self._build_system(CODER_FAST_SYSTEM, extension),
         )
 
-    def explained(self):
-        extension = """[Mistral Explained Mode]
+    def explained(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Clear technical explanations
 - Connect reasoning to implementation
 - Practical examples

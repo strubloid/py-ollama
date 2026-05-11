@@ -8,6 +8,7 @@ class Default(BaseModelFamily):
     """Default balanced configurations for unknown models."""
 
     family_name = "Default"
+    model_name = "No Name"
 
     def model_profile(self) -> str:
         return "General-purpose configuration suitable for most Ollama models."
@@ -17,8 +18,8 @@ class Default(BaseModelFamily):
             return base_system
         return f"{base_system}\n\n---\n\n{extension}"
 
-    def normal(self):
-        extension = """[Default Normal Mode]
+    def normal(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Be helpful and practical
 - Follow user instructions
 - Provide clear responses
@@ -30,8 +31,8 @@ class Default(BaseModelFamily):
             system=self._build_system(NORMAL_SYSTEM, extension),
         )
 
-    def coder(self):
-        extension = """[Default Coder Mode]
+    def coder(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Write correct, maintainable code
 - Apply best practices
 - Handle errors properly
@@ -44,8 +45,8 @@ class Default(BaseModelFamily):
             system=self._build_system(CODER_SYSTEM, extension),
         )
 
-    def coder_fast(self):
-        extension = """[Default Coder Fast Mode]
+    def coder_fast(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Quick, working solutions
 - Keep it simple
 """
@@ -56,8 +57,8 @@ class Default(BaseModelFamily):
             system=self._build_system(CODER_FAST_SYSTEM, extension),
         )
 
-    def explained(self):
-        extension = """[Default Explained Mode]
+    def explained(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Clear explanations
 - Step-by-step reasoning
 - Practical examples

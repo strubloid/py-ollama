@@ -8,6 +8,7 @@ class Llama(BaseModelFamily):
     """Llama model configurations."""
 
     family_name = "Llama"
+    model_name = "Muu"
 
     def model_profile(self) -> str:
         return "Llama by Meta is a versatile open-source model with strong general reasoning capabilities."
@@ -17,8 +18,8 @@ class Llama(BaseModelFamily):
             return base_system
         return f"{base_system}\n\n---\n\n{extension}"
 
-    def normal(self):
-        extension = """[Llama Normal Mode]
+    def normal(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Be direct and practical in responses
 - Use Llama's strong reasoning to break down problems
 - Provide clear, actionable answers
@@ -30,8 +31,8 @@ class Llama(BaseModelFamily):
             system=self._build_system(NORMAL_SYSTEM, extension),
         )
 
-    def coder(self):
-        extension = """[Llama Coder Mode]
+    def coder(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Write idiomatic code following best practices
 - Use modern language features and patterns
 - Prioritize correctness and efficiency
@@ -45,8 +46,8 @@ class Llama(BaseModelFamily):
             system=self._build_system(CODER_SYSTEM, extension),
         )
 
-    def coder_fast(self):
-        extension = """[Llama Coder Fast Mode]
+    def coder_fast(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Provide quick, working solutions
 - Keep it simple and functional
 - Minimal explanation, maximum results
@@ -58,8 +59,8 @@ class Llama(BaseModelFamily):
             system=self._build_system(CODER_FAST_SYSTEM, extension),
         )
 
-    def explained(self):
-        extension = """[Llama Explained Mode]
+    def explained(self, custom_name: str = ""):
+        extension = f"""[{self.getModelName(custom_name)}]
 - Explain reasoning step by step
 - Connect concepts logically
 - Provide practical examples
