@@ -9,7 +9,7 @@ import sys
 
 import helpers
 import models
-import ai.modelfile
+import ai
 
 
 def main() -> int:
@@ -37,7 +37,7 @@ def main() -> int:
         selected_config = model_configs[selected_config_key]
         print(f"\n✓ Selected configuration: {selected_config.name}")
 
-        modelfile_content = ai.modelfile.build_modelfile_content(
+        modelfile_content = ai.build_modelfile_content(
             base_model=selected_model,
             config_params=selected_config.config,
             system_prompt=selected_config.system,
@@ -52,7 +52,7 @@ def main() -> int:
 
         return 0
 
-    except ai.modelfile.ModelfileError as e:
+    except ai.ModelfileError as e:
         print(f"\nError: {e}")
         return 1
     except helpers.UserCancelledError:

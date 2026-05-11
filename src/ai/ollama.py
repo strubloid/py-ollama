@@ -9,7 +9,6 @@ Handles:
 
 import subprocess
 import shutil
-from typing import Optional
 
 
 class OllamaError(Exception):
@@ -112,4 +111,33 @@ def create_model(model_name: str, modelfile_path: str) -> None:
     except subprocess.CalledProcessError as e:
         raise OllamaCommandError(
             f"'ollama create' failed: {e.stderr or e.stdout}"
+        ) from e
+
+
+def delete_model(model_name: str) -> None:
+    """
+    Delete an Ollama model.
+
+    Runs the command: ollama rm <model_name>
+
+    Args:
+        model_name: The name of the model to delete.
+
+    Raises:
+        OllamaNotFoundError: If 'ollama' is not installed.
+        OllamaCommandError: If the command fails.
+    """
+    if not check_ollama_installed():
+        raise OllamaNotFoundError("'ollama' command not found. Is Ollama installed?")
+
+    try:
+        subprocess.run(
+            ["ollama", "rm", model_name],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError as e:
+        raise OllamaCommandError(
+            f"'ollama rm' failed: {e.stderr or e.stdout}"
         ) from e

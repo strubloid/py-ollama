@@ -9,13 +9,6 @@ Handles:
 
 import tempfile
 import os
-from typing import Optional
-
-
-class ModelfileError(Exception):
-    """Base exception for Modelfile-related errors."""
-
-    pass
 
 
 def build_modelfile_content(
@@ -31,9 +24,9 @@ def build_modelfile_content(
 
         <config_params (PARAMETER lines)>
 
-        SYSTEM \"\"\"
+        SYSTEM "
         <system_prompt>
-        \"\"\"
+        "
 
     Args:
         base_model: The name of the base model (e.g., 'llama2').
@@ -46,6 +39,8 @@ def build_modelfile_content(
     Raises:
         ModelfileError: If any required parameter is empty.
     """
+    from .modelfile_error import ModelfileError
+
     if not base_model or not base_model.strip():
         raise ModelfileError("base_model cannot be empty")
     if not config_params or not config_params.strip():
@@ -82,9 +77,9 @@ def write_temporary_modelfile(content: str) -> str:
     Raises:
         ModelfileError: If writing to the file fails.
     """
+    from .modelfile_error import ModelfileError
+
     try:
-        # Create a temporary file that persists after closing
-        # (we'll delete it manually after use)
         tmp_file = tempfile.NamedTemporaryFile(
             mode="w",
             suffix=".Modelfile",
@@ -108,51 +103,10 @@ def cleanup_modelfile(file_path: str) -> None:
     Raises:
         ModelfileError: If deletion fails (other than file not found).
     """
+    from .modelfile_error import ModelfileError
+
     try:
         if os.path.exists(file_path):
             os.remove(file_path)
     except OSError as e:
         raise ModelfileError(f"Failed to delete temporary Modelfile: {e}") from e
-
-
-class TemporaryModelfile:
-    """
-    Context manager for creating and cleaning up temporary Modelfiles.
-
-    Usage:
-        with TemporaryModelfile(content) as modelfile_path:
-            ollama.create_model("my-model", modelfile_path)
-        # File is automatically cleaned up after the with block
-    """
-
-    def __init__(self, content: str) -> None:
-        """
-        Initialize the context manager.
-
-        Args:
-            content: The Modelfile content to write.
-        """
-        self.content = content
-        self.file_path: Optional[str] = None
-
-    def __enter__(self) -> str:
-        """
-        Create the temporary Modelfile.
-
-        Returns:
-            The path to the temporary Modelfile.
-        """
-        self.file_path = write_temporary_modelfile(self.content)
-        return self.file_path
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        """
-        Clean up the temporary Modelfile.
-
-        Args:
-            exc_type: Exception type if an exception occurred.
-            exc_val: Exception value if an exception occurred.
-            exc_tb: Exception traceback if an exception occurred.
-        """
-        if self.file_path:
-            cleanup_modelfile(self.file_path)

@@ -1,7 +1,4 @@
-from typing import Optional
-
-import ai.ollama
-import ai.modelfile
+import ai
 
 
 class UserCancelledError(Exception):
@@ -172,8 +169,8 @@ def confirm_and_create_model(model_name: str, modelfile_content: str) -> None:
 
     print(f"\nCreating model '{model_name}'...")
 
-    with ai.modelfile.TemporaryModelfile(modelfile_content) as tmp_path:
-        ai.ollama.create_model(model_name, tmp_path)
+    with ai.TemporaryModelfile(modelfile_content) as tmp_path:
+        ai.create_model(model_name, tmp_path)
 
     print(
         f"\n✓ Model '{model_name}' created successfully!\n"
