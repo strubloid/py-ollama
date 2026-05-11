@@ -58,9 +58,9 @@ def build_modelfile_content(
         "",
         config_params,
         "",
-        'SYSTEM """',
+        'SYSTEM "',
         system_prompt,
-        '"""',
+        '"',
     ]
     content = "\n".join(lines)
     return content

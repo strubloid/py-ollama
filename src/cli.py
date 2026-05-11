@@ -13,22 +13,25 @@ import ai.modelfile
 
 
 def main() -> int:
-    print("=" * 60)
-    print("Ollama Tweak Advanced - Create Customized Models")
-    print("=" * 60)
-
     try:
+        # Display the main menu
+        print("=" * 60)
+        print("Ollama Tweak Advanced V2.0 - Create Customized Models")
+        print("=" * 60)
         
+        ## loading models
         available_models = helpers.validate_ollama()
-        print("\n" + "=" * 60)
 
+        ## selecting a model
         selected_model = helpers.display_menu(available_models, title="Select base model:")
-        print("\n" + "=" * 60)
-        new_model_name = helpers.get_string_input("Enter new model name: ")
+        print("=" * 60 + "\n")
+        
+        new_model_name = helpers.get_string_input("New tweaked model name: ")
 
+        # get model family and configurations
         model_configs = models.get_configs_for_model(selected_model)
         model_family = models.detect_model_family(selected_model)
-        print(f"\n📍 Detected model family: {model_family}")
+        print(f"==> Model: {model_family}")
 
         selected_config_key = helpers.display_config_options(model_configs)
         selected_config = model_configs[selected_config_key]
@@ -39,13 +42,12 @@ def main() -> int:
             config_params=selected_config.config,
             system_prompt=selected_config.system,
         )
-
-        print("\n" + "=" * 60)
-        print("Generated Modelfile:")
-        print("=" * 60)
+        
+        ## formatting and displaying the generated modelfile content for confirmation
+        print("\n" + "=" * 60 + "\n" + "Generated modelfile content:\n" + "=" * 60 + "\n")
         print(modelfile_content)
-        print("=" * 60)
 
+        # confirming and creating the new model
         helpers.confirm_and_create_model(new_model_name, modelfile_content)
 
         return 0

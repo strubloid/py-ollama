@@ -10,30 +10,60 @@ from .Default import Default
 from .OllamaModelConfig import detect_model_family
 
 
+MODEL_FAMILIES = {
+    "llama": Llama,
+    "deepseek": Deepseek,
+    "qwen": Qwen,
+    "gemma": Gemma,
+    "mistral": Mistral,
+    "devstral": Mistral,
+}
+
+
+def _get_family_instance(model_name: str):
+    """Get the model family instance for a given model name."""
+    family_key = detect_model_family(model_name)
+
+    family_class = Default
+    for key, cls in MODEL_FAMILIES.items():
+        if key in family_key:
+            family_class = cls
+            break
+
+    return family_class()
+
+
 def get_configs_for_model(model_name: str) -> dict:
     """
-    Get configs for a model.
+    Get all configs for a model.
 
     Args:
         model_name: Model name
 
     Returns:
-        Dictionary with config options
+        Dictionary with all config options (normal, coder, coder_fast, explained)
     """
-    family = detect_model_family(model_name)
+    return _get_family_instance(model_name).get_all()
 
-    if 'llama' in family:
-        return Llama.get_all()
-    elif 'deepseek' in family:
-        return Deepseek.get_all()
-    elif 'qwen' in family:
-        return Qwen.get_all()
-    elif 'gemma' in family:
-        return Gemma.get_all()
-    elif 'devstral' in family or 'mistral' in family:
-        return Mistral.get_all()
-    else:
-        return Default.get_all()
+
+def get_normal_mode(model_name: str) -> ModelConfig:
+    """Get the normal mode config for a model."""
+    return _get_family_instance(model_name).normal()
+
+
+def get_coder_mode(model_name: str) -> ModelConfig:
+    """Get the coder mode config for a model."""
+    return _get_family_instance(model_name).coder()
+
+
+def get_coder_fast_mode(model_name: str) -> ModelConfig:
+    """Get the coder_fast mode config for a model."""
+    return _get_family_instance(model_name).coder_fast()
+
+
+def get_explained_mode(model_name: str) -> ModelConfig:
+    """Get the explained mode config for a model."""
+    return _get_family_instance(model_name).explained()
 
 
 __all__ = [
@@ -46,4 +76,9 @@ __all__ = [
     "Default",
     "detect_model_family",
     "get_configs_for_model",
+    "get_normal_mode",
+    "get_coder_mode",
+    "get_coder_fast_mode",
+    "get_explained_mode",
+    "MODEL_FAMILIES",
 ]

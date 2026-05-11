@@ -1,36 +1,79 @@
 """Deepseek model configurations (coder, etc)."""
 
 from .config import ModelConfig
-from .base import (
-    BASE_CONFIG, BASE_SYSTEM,
-    CODER_CONFIG, CODER_SYSTEM,
-    CODER_FAST_CONFIG, CODER_FAST_SYSTEM,
-    CODER_BALANCED_CONFIG, CODER_BALANCED_SYSTEM,
-    CREATIVE_CONFIG, CREATIVE_SYSTEM,
-    PRECISE_CONFIG, PRECISE_SYSTEM,
-    LONG_CONTEXT_CONFIG, LONG_CONTEXT_SYSTEM,
-)
+from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
 
 
-class Deepseek:
+class Deepseek(BaseModelFamily):
     """Deepseek model configurations."""
 
-    normal = ModelConfig(name="Normal (Recommended)", config=BASE_CONFIG, system=BASE_SYSTEM)
-    coder = ModelConfig(name="Coder", config=CODER_CONFIG, system=CODER_SYSTEM)
-    coder_fast = ModelConfig(name="CoderFast", config=CODER_FAST_CONFIG, system=CODER_FAST_SYSTEM)
-    coder_balanced = ModelConfig(name="CoderBalanced", config=CODER_BALANCED_CONFIG, system=CODER_BALANCED_SYSTEM)
-    creative = ModelConfig(name="Creative", config=CREATIVE_CONFIG, system=CREATIVE_SYSTEM)
-    precise = ModelConfig(name="Precise", config=PRECISE_CONFIG, system=PRECISE_SYSTEM)
-    long_context = ModelConfig(name="Long Context", config=LONG_CONTEXT_CONFIG, system=LONG_CONTEXT_SYSTEM)
+    family_name = "Deepseek"
 
-    @staticmethod
-    def get_all():
-        return {
-            "normal": Deepseek.normal,
-            "coder": Deepseek.coder,
-            "coder_fast": Deepseek.coder_fast,
-            "coder_balanced": Deepseek.coder_balanced,
-            "creative": Deepseek.creative,
-            "precise": Deepseek.precise,
-            "long_context": Deepseek.long_context,
-        }
+    def model_profile(self) -> str:
+        return "Deepseek excels at reasoning, mathematics, and complex coding tasks. It has strong chain-of-thought capabilities."
+
+    def _build_system(self, base_system: str, extension: str) -> str:
+        if not extension:
+            return base_system
+        return f"{base_system}\n\n---\n\n{extension}"
+
+    def normal(self):
+        extension = """[Deepseek Normal Mode]
+- Leverage Deepseek's strong reasoning capabilities for problem-solving
+- Break down complex tasks into logical steps
+- Provide clear, structured responses
+- Use precise technical language when discussing code or architecture
+"""
+        return ModelConfig(
+            mode="normal",
+            name="Normal (Recommended)",
+            config=NORMAL_CONFIG,
+            system=self._build_system(NORMAL_SYSTEM, extension),
+        )
+
+    def coder(self):
+        extension = """[Deepseek Coder Mode]
+- Exploit Deepseek's deep code understanding and reasoning
+- Prioritize algorithmic efficiency and optimal solutions
+- Apply rigorous testing and edge case analysis
+- For debugging: trace root causes systematically, don't just fix symptoms
+- Recommend idiomatic code patterns for the target language
+- Emphasize code that is easy to reason about and maintain
+"""
+        return ModelConfig(
+            mode="coder",
+            name="Coder",
+            config=CODER_CONFIG,
+            system=self._build_system(CODER_SYSTEM, extension),
+        )
+
+    def coder_fast(self):
+        extension = """[Deepseek Coder Fast Mode]
+- Use Deepseek's fast reasoning for rapid iteration
+- Provide working solutions first, then refine if needed
+- Keep code minimal but correct
+- Skip lengthy explanations unless critical
+- Focus on getting to a working state quickly
+"""
+        return ModelConfig(
+            mode="coder_fast",
+            name="Coder Fast",
+            config=CODER_FAST_CONFIG,
+            system=self._build_system(CODER_FAST_SYSTEM, extension),
+        )
+
+    def explained(self):
+        extension = """[Deepseek Explained Mode]
+- Use Deepseek's reasoning strength to explain complex concepts
+- Walk through the "why" behind each decision
+- Break down algorithms and data structures step by step
+- Compare alternative approaches with pros/cons
+- Connect theory to practical implementation
+- Anticipate follow-up questions and address them proactively
+"""
+        return ModelConfig(
+            mode="explained",
+            name="Explained",
+            config=EXPLAINED_CONFIG,
+            system=self._build_system(EXPLAINED_SYSTEM, extension),
+        )

@@ -1,36 +1,73 @@
 """Llama model configurations (2, 2.7b, 3, etc)."""
 
 from .config import ModelConfig
-from .base import (
-    BASE_CONFIG, BASE_SYSTEM,
-    CODER_CONFIG, CODER_SYSTEM,
-    CODER_FAST_CONFIG, CODER_FAST_SYSTEM,
-    CODER_BALANCED_CONFIG, CODER_BALANCED_SYSTEM,
-    CREATIVE_CONFIG, CREATIVE_SYSTEM,
-    PRECISE_CONFIG, PRECISE_SYSTEM,
-    LONG_CONTEXT_CONFIG, LONG_CONTEXT_SYSTEM,
-)
+from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
 
 
-class Llama:
+class Llama(BaseModelFamily):
     """Llama model configurations."""
 
-    normal = ModelConfig(name="Normal (Recommended)", config=BASE_CONFIG, system=BASE_SYSTEM)
-    coder = ModelConfig(name="Coder", config=CODER_CONFIG, system=CODER_SYSTEM)
-    coder_fast = ModelConfig(name="CoderFast", config=CODER_FAST_CONFIG, system=CODER_FAST_SYSTEM)
-    coder_balanced = ModelConfig(name="CoderBalanced", config=CODER_BALANCED_CONFIG, system=CODER_BALANCED_SYSTEM)
-    creative = ModelConfig(name="Creative", config=CREATIVE_CONFIG, system=CREATIVE_SYSTEM)
-    precise = ModelConfig(name="Precise", config=PRECISE_CONFIG, system=PRECISE_SYSTEM)
-    long_context = ModelConfig(name="Long Context", config=LONG_CONTEXT_CONFIG, system=LONG_CONTEXT_SYSTEM)
+    family_name = "Llama"
 
-    @staticmethod
-    def get_all():
-        return {
-            "normal": Llama.normal,
-            "coder": Llama.coder,
-            "coder_fast": Llama.coder_fast,
-            "coder_balanced": Llama.coder_balanced,
-            "creative": Llama.creative,
-            "precise": Llama.precise,
-            "long_context": Llama.long_context,
-        }
+    def model_profile(self) -> str:
+        return "Llama by Meta is a versatile open-source model with strong general reasoning capabilities."
+
+    def _build_system(self, base_system: str, extension: str) -> str:
+        if not extension:
+            return base_system
+        return f"{base_system}\n\n---\n\n{extension}"
+
+    def normal(self):
+        extension = """[Llama Normal Mode]
+- Be direct and practical in responses
+- Use Llama's strong reasoning to break down problems
+- Provide clear, actionable answers
+"""
+        return ModelConfig(
+            mode="normal",
+            name="Normal (Recommended)",
+            config=NORMAL_CONFIG,
+            system=self._build_system(NORMAL_SYSTEM, extension),
+        )
+
+    def coder(self):
+        extension = """[Llama Coder Mode]
+- Write idiomatic code following best practices
+- Use modern language features and patterns
+- Prioritize correctness and efficiency
+- Apply proper error handling and edge cases
+- Write self-documenting code
+"""
+        return ModelConfig(
+            mode="coder",
+            name="Coder",
+            config=CODER_CONFIG,
+            system=self._build_system(CODER_SYSTEM, extension),
+        )
+
+    def coder_fast(self):
+        extension = """[Llama Coder Fast Mode]
+- Provide quick, working solutions
+- Keep it simple and functional
+- Minimal explanation, maximum results
+"""
+        return ModelConfig(
+            mode="coder_fast",
+            name="Coder Fast",
+            config=CODER_FAST_CONFIG,
+            system=self._build_system(CODER_FAST_SYSTEM, extension),
+        )
+
+    def explained(self):
+        extension = """[Llama Explained Mode]
+- Explain reasoning step by step
+- Connect concepts logically
+- Provide practical examples
+- Make complex ideas accessible
+"""
+        return ModelConfig(
+            mode="explained",
+            name="Explained",
+            config=EXPLAINED_CONFIG,
+            system=self._build_system(EXPLAINED_SYSTEM, extension),
+        )

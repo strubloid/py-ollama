@@ -1,6 +1,6 @@
 """Shared ModelConfig dataclass for all models."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
@@ -10,6 +10,7 @@ class ModelConfig:
     config: str
     system: str
     description: str = ""
+    mode: str = ""
 
     def get_params_table(self) -> list[list[str]]:
         """Parse config into a table of parameter names and values."""

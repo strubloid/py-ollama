@@ -50,7 +50,7 @@ def display_config_options(model_configs: dict) -> str:
     Returns:
         Selected config key.
     """
-    headers = ["#", "Name", "num_ctx", "temperature", "num_predict"]
+    headers = ["#", "Name", "num_ctx", "num_predict", "temp", "top_p", "top_k", "repeat_pen", "repeat_n"]
     rows = []
     config_list = list(model_configs.items())
 
@@ -62,8 +62,12 @@ def display_config_options(model_configs: dict) -> str:
             str(i),
             cfg.name,
             param_dict.get("num_ctx", "-"),
-            param_dict.get("temperature", "-"),
             param_dict.get("num_predict", "-"),
+            param_dict.get("temperature", "-"),
+            param_dict.get("top_p", "-"),
+            param_dict.get("top_k", "-"),
+            param_dict.get("repeat_penalty", "-"),
+            param_dict.get("repeat_last_n", "-"),
         ])
 
     print("\nAvailable configurations:")

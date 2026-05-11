@@ -1,36 +1,70 @@
 """Default balanced configurations for unknown models."""
 
 from .config import ModelConfig
-from .base import (
-    BASE_CONFIG, BASE_SYSTEM,
-    CODER_CONFIG, CODER_SYSTEM,
-    CODER_FAST_CONFIG, CODER_FAST_SYSTEM,
-    CODER_BALANCED_CONFIG, CODER_BALANCED_SYSTEM,
-    CREATIVE_CONFIG, CREATIVE_SYSTEM,
-    PRECISE_CONFIG, PRECISE_SYSTEM,
-    LONG_CONTEXT_CONFIG, LONG_CONTEXT_SYSTEM,
-)
+from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
 
 
-class Default:
+class Default(BaseModelFamily):
     """Default balanced configurations for unknown models."""
 
-    normal = ModelConfig(name="Normal (Recommended)", config=BASE_CONFIG, system=BASE_SYSTEM)
-    coder = ModelConfig(name="Coder", config=CODER_CONFIG, system=CODER_SYSTEM)
-    coder_fast = ModelConfig(name="CoderFast", config=CODER_FAST_CONFIG, system=CODER_FAST_SYSTEM)
-    coder_balanced = ModelConfig(name="CoderBalanced", config=CODER_BALANCED_CONFIG, system=CODER_BALANCED_SYSTEM)
-    creative = ModelConfig(name="Creative", config=CREATIVE_CONFIG, system=CREATIVE_SYSTEM)
-    precise = ModelConfig(name="Precise", config=PRECISE_CONFIG, system=PRECISE_SYSTEM)
-    long_context = ModelConfig(name="Long Context", config=LONG_CONTEXT_CONFIG, system=LONG_CONTEXT_SYSTEM)
+    family_name = "Default"
 
-    @staticmethod
-    def get_all():
-        return {
-            "normal": Default.normal,
-            "coder": Default.coder,
-            "coder_fast": Default.coder_fast,
-            "coder_balanced": Default.coder_balanced,
-            "creative": Default.creative,
-            "precise": Default.precise,
-            "long_context": Default.long_context,
-        }
+    def model_profile(self) -> str:
+        return "General-purpose configuration suitable for most Ollama models."
+
+    def _build_system(self, base_system: str, extension: str) -> str:
+        if not extension:
+            return base_system
+        return f"{base_system}\n\n---\n\n{extension}"
+
+    def normal(self):
+        extension = """[Default Normal Mode]
+- Be helpful and practical
+- Follow user instructions
+- Provide clear responses
+"""
+        return ModelConfig(
+            mode="normal",
+            name="Normal (Recommended)",
+            config=NORMAL_CONFIG,
+            system=self._build_system(NORMAL_SYSTEM, extension),
+        )
+
+    def coder(self):
+        extension = """[Default Coder Mode]
+- Write correct, maintainable code
+- Apply best practices
+- Handle errors properly
+- Test edge cases
+"""
+        return ModelConfig(
+            mode="coder",
+            name="Coder",
+            config=CODER_CONFIG,
+            system=self._build_system(CODER_SYSTEM, extension),
+        )
+
+    def coder_fast(self):
+        extension = """[Default Coder Fast Mode]
+- Quick, working solutions
+- Keep it simple
+"""
+        return ModelConfig(
+            mode="coder_fast",
+            name="Coder Fast",
+            config=CODER_FAST_CONFIG,
+            system=self._build_system(CODER_FAST_SYSTEM, extension),
+        )
+
+    def explained(self):
+        extension = """[Default Explained Mode]
+- Clear explanations
+- Step-by-step reasoning
+- Practical examples
+"""
+        return ModelConfig(
+            mode="explained",
+            name="Explained",
+            config=EXPLAINED_CONFIG,
+            system=self._build_system(EXPLAINED_SYSTEM, extension),
+        )
