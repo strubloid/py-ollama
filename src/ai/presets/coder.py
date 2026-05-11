@@ -6,13 +6,13 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class CoderPreset:
     name: str = "Coder"
-    config: str = """PARAMETER num_ctx 4096
-PARAMETER num_predict 384
-PARAMETER temperature 0.2
-PARAMETER top_p 0.85
-PARAMETER top_k 30
-PARAMETER repeat_penalty 1.1
-PARAMETER repeat_last_n 128
+    config: str = """PARAMETER num_ctx 1024
+PARAMETER num_predict 64
+PARAMETER temperature 0.1
+PARAMETER top_p 0.7
+PARAMETER top_k 10
+PARAMETER repeat_penalty 1.15
+PARAMETER repeat_last_n 32
 PARAMETER seed -1
 PARAMETER stop []"""
     system: str = """Expert coding agent. Core: correct, efficient, production-ready code.

@@ -28,13 +28,49 @@ def _build_config(
 
 
 NORMAL_CONFIG = _build_config(
-    num_ctx=4096,
-    num_predict=512,
-    temperature=0.6,
-    top_p=0.9,
-    top_k=40,
-    repeat_penalty=1.08,
-    repeat_last_n=256,
+    num_ctx=1024,
+    num_predict=64,
+    temperature=0.1,
+    top_p=0.7,
+    top_k=10,
+    repeat_penalty=1.15,
+    repeat_last_n=32,
+    seed=-1,
+    stop=[],
+)
+
+CODER_CONFIG = _build_config(
+    num_ctx=1024,
+    num_predict=64,
+    temperature=0.1,
+    top_p=0.7,
+    top_k=10,
+    repeat_penalty=1.15,
+    repeat_last_n=32,
+    seed=-1,
+    stop=[],
+)
+
+CODER_FAST_CONFIG = _build_config(
+    num_ctx=512,
+    num_predict=32,
+    temperature=0.05,
+    top_p=0.6,
+    top_k=5,
+    repeat_penalty=1.2,
+    repeat_last_n=16,
+    seed=-1,
+    stop=[],
+)
+
+EXPLAINED_CONFIG = _build_config(
+    num_ctx=1024,
+    num_predict=96,
+    temperature=0.15,
+    top_p=0.75,
+    top_k=15,
+    repeat_penalty=1.15,
+    repeat_last_n=48,
     seed=-1,
     stop=[],
 )
@@ -59,13 +95,13 @@ Success means: task complete, validated, and verified."""
 
 
 CODER_CONFIG = _build_config(
-    num_ctx=4096,
-    num_predict=384,
-    temperature=0.2,
-    top_p=0.85,
-    top_k=30,
-    repeat_penalty=1.1,
-    repeat_last_n=128,
+    num_ctx=1536,
+    num_predict=128,
+    temperature=0.15,
+    top_p=0.8,
+    top_k=20,
+    repeat_penalty=1.08,
+    repeat_last_n=96,
     seed=-1,
     stop=[],
 )
@@ -79,13 +115,13 @@ Report what changed. Never claim success unless working."""
 
 
 CODER_FAST_CONFIG = _build_config(
-    num_ctx=2048,
-    num_predict=192,
-    temperature=0.15,
-    top_p=0.85,
-    top_k=20,
-    repeat_penalty=1.1,
-    repeat_last_n=96,
+    num_ctx=1024,
+    num_predict=96,
+    temperature=0.1,
+    top_p=0.75,
+    top_k=10,
+    repeat_penalty=1.05,
+    repeat_last_n=64,
     seed=-1,
     stop=[],
 )
@@ -94,10 +130,10 @@ CODER_FAST_SYSTEM = """Quick coding assistant. Correctness first. Minimal change
 
 
 EXPLAINED_CONFIG = _build_config(
-    num_ctx=4096,
-    num_predict=384,
-    temperature=0.25,
-    top_p=0.9,
+    num_ctx=1536,
+    num_predict=192,
+    temperature=0.2,
+    top_p=0.85,
     top_k=30,
     repeat_penalty=1.1,
     repeat_last_n=128,

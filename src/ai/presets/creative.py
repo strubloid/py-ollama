@@ -6,13 +6,13 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class CreativePreset:
     name: str = "Creative"
-    config: str = """PARAMETER num_ctx 4096
-PARAMETER num_predict 512
-PARAMETER temperature 0.8
-PARAMETER top_p 0.9
-PARAMETER top_k 40
-PARAMETER repeat_penalty 1.08
-PARAMETER repeat_last_n 256
+    config: str = """PARAMETER num_ctx 1024
+PARAMETER num_predict 64
+PARAMETER temperature 0.1
+PARAMETER top_p 0.7
+PARAMETER top_k 10
+PARAMETER repeat_penalty 1.15
+PARAMETER repeat_last_n 32
 PARAMETER seed -1
 PARAMETER stop []"""
     system: str = """You are an autonomous creative and solution-design agent.
