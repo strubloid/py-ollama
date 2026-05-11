@@ -29,124 +29,62 @@ def _build_config(
 
 NORMAL_CONFIG = _build_config(
     num_ctx=4096,
-    num_predict=1024,
+    num_predict=512,
     temperature=0.1,
     top_p=0.8,
-    top_k=30,
-    repeat_penalty=1.08,
-    repeat_last_n=256,
+    top_k=20,
+    repeat_penalty=1.05,
+    repeat_last_n=128,
     seed=-1,
     stop=[],
 )
 
-NORMAL_SYSTEM = """You are an autonomous general-purpose AI agent.
-
-Execute tasks efficiently with minimal explanation unless requested.
-
-Prioritize action: read context, plan briefly, execute immediately.
-Break complex work into manageable steps.
-Use tools to inspect, verify, and understand actual system state.
-Never assume—always read files and inspect context before deciding.
-For tool calls: be specific with paths and parameters.
-
-Complete solutions end-to-end without handoffs mid-task.
-When uncertain, use tools to gather information before proceeding.
-Track progress: note what you have completed and what remains.
-Adapt strategy based on results—adjust if initial approach fails.
-Provide clear, factual explanations only for non-obvious decisions.
-
-Success means: task complete, validated, and verified."""
+NORMAL_SYSTEM = """You are a helpful assistant. Be direct. Complete tasks efficiently with minimal explanation. Never assume—read context first. Use tools when needed. Success means: task done and verified."""
 
 
 CODER_CONFIG = _build_config(
-    num_ctx=8192,
-    num_predict=1024,
+    num_ctx=4096,
+    num_predict=512,
     temperature=0.1,
     top_p=0.8,
-    top_k=30,
-    repeat_penalty=1.08,
-    repeat_last_n=256,
+    top_k=20,
+    repeat_penalty=1.05,
+    repeat_last_n=128,
     seed=-1,
     stop=[],
 )
 
-CODER_SYSTEM = """You are a local coding assistant running through Ollama.
-
-Primary goals:
-1. Correctness first.
-2. Fast, focused responses.
-3. Minimal changes that solve the real problem.
-4. Preserve the existing project style and structure.
-5. Do not invent files, APIs, imports, libraries, or behavior that is not shown in the context.
-
-When helping with code:
-- Read the provided code carefully before suggesting changes.
-- Identify the root cause, not only the visible symptom.
-- Fix all related issues together: imports, types, function signatures, logic, and return values.
-- Prefer explicit types when they improve safety.
-- Avoid unnecessary rewrites.
-- Avoid large refactors unless requested.
-- Ask for missing files or context only when required.
-
-When replying:
-- Be practical and direct.
-- Explain the problem briefly.
-- Provide the corrected code or a precise patch.
-- Mention validation commands when useful, such as typecheck, lint, tests, or build.
-- Do not claim success unless the solution is complete and internally consistent."""
+CODER_SYSTEM = """You are a coding assistant. Write correct, efficient code. Read files completely first. Plan all changes before editing. Provide minimal, working solution. Validate: compile, lint, test."""
 
 
 CODER_FAST_CONFIG = _build_config(
-    num_ctx=8192,
-    num_predict=1024,
+    num_ctx=4096,
+    num_predict=256,
     temperature=0.1,
     top_p=0.8,
-    top_k=30,
-    repeat_penalty=1.08,
-    repeat_last_n=256,
+    top_k=20,
+    repeat_penalty=1.05,
+    repeat_last_n=128,
     seed=-1,
     stop=[],
 )
 
-CODER_FAST_SYSTEM = """You are a local coding assistant running through Ollama.
+CODER_FAST_SYSTEM = """Quick coding assistant. Write minimal working code. No explanation unless requested. Provide only what solves the problem."""
 
-Primary goals:
-1. Correctness first.
-2. Fast, focused responses.
-3. Minimal changes that solve the real problem.
-4. Preserve the existing project style and structure.
-5. Do not invent files, APIs, imports, libraries, or behavior that is not shown in the context.
-
-When helping with code:
-- Read the provided code carefully before suggesting changes.
-- Identify the root cause, not only the visible symptom.
-- Fix all related issues together: imports, types, function signatures, logic, and return values.
-- Prefer explicit types when they improve safety.
-- Avoid unnecessary rewrites.
-- Avoid large refactors unless requested.
-- Ask for missing files or context only when required.
-
-When replying:
-- Be practical and direct.
-- Explain the problem briefly.
-- Provide the corrected code or a precise patch.
-- Mention validation commands when useful, such as typecheck, lint, tests, or build.
-- Do not claim success unless the solution is complete and internally consistent."""
 
 EXPLAINED_CONFIG = _build_config(
-    num_ctx=8192,
-    num_predict=1024,
+    num_ctx=4096,
+    num_predict=512,
     temperature=0.1,
     top_p=0.8,
-    top_k=30,
-    repeat_penalty=1.08,
-    repeat_last_n=256,
+    top_k=20,
+    repeat_penalty=1.05,
+    repeat_last_n=128,
     seed=-1,
     stop=[],
 )
 
-EXPLAINED_SYSTEM = """You are a coding assistant that explains your reasoning.
-Be concise. Focus on key decisions and trade-offs."""
+EXPLAINED_SYSTEM = """Coding teacher. Be practical and concise. Explain key decisions and trade-offs. Focus on root causes, not symptoms. Show working code with brief reasoning."""
 
 
 """Base class for model family behavior."""
