@@ -2,12 +2,12 @@
 
 from dataclasses import dataclass
 
-from .balanced_preset import BALANCED
-from .coder_preset import CODER
-from .coder_fast_preset import CODER_FAST
-from .coder_balanced_preset import CODER_BALANCED
-from .creative_preset import CREATIVE
-from .long_context_preset import LONG_CONTEXT
+from .balanced import BALANCED
+from .coder import CODER
+from .coder_fast import CODER_FAST
+from .coder_balanced import CODER_BALANCED
+from .creative import CREATIVE
+from .long_context import LONG_CONTEXT
 
 
 @dataclass(frozen=True)

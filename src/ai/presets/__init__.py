@@ -1,6 +1,6 @@
 """AI Presets package."""
 
-from .model_presets import OllamaPreset, PRESETS, list_preset_names
+from .model import OllamaPreset, PRESETS, list_preset_names
 
 
 __all__ = [
