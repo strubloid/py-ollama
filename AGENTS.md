@@ -1,6 +1,18 @@
 # Agents
 
-## Package Layout
+## Coding Preferences
+
+Always read [`AGENTS.PREFERENCES.md`](AGENTS.PREFERENCES.md) for:
+- SOLID principles and design patterns
+- Code organization and naming conventions
+- Testing best practices
+- Project-specific patterns and structure
+
+---
+
+## This Project - py-ollama
+
+### Package Layout
 
 Source is in `src/`, but the package has **no namespace package** — modules are imported directly:
 ```python
@@ -15,52 +27,106 @@ Do NOT use `from ollama_tweak_advanced import ...`.
 
 Entrypoint: `py-ollama = "cli:main"` (defined in `pyproject.toml`).
 
-## Directory Structure
+### Directory Structure
+
+Run `gen-tree` to generate the current structure.
 
 ```
 src/
-├── cli.py              # Entry point, interactive flow
-├── presets.py          # Preset configurations (Balanced, Coder, etc.)
+├── cli.py
 ├── helpers/
 │   ├── __init__.py
-│   └── default_helpers.py  # display_menu, display_config_options, validate_ollama, etc.
-├── models/
-│   ├── __init__.py     # Exports detect_model_family, get_configs_for_model
-│   ├── config.py       # ModelConfig dataclass with get_params_table()
-│   ├── OllamaModelConfig.py
-│   ├── Llama.py        # normal, tweak configs
-│   ├── Deepseek.py
-│   ├── Qwen.py
-│   ├── Gemma.py
-│   ├── Mistral.py      # Also handles Devstral
-│   └── Default.py
+│   └── default_helpers.py
 └── ai/
-    ├── ollama/__init__.py    # check_ollama_installed, get_available_models, create_model
-    └── modelfile/__init__.py  # build_modelfile_content, TemporaryModelfile
+    ├── __init__.py
+    ├── config/
+    │   ├── __init__.py
+    │   ├── model_config.py
+    │   └── ollama_config.py
+    ├── models/
+    │   ├── __init__.py
+    │   ├── base.py
+    │   ├── deepseek.py
+    │   ├── default.py
+    │   ├── gemma.py
+    │   ├── llama.py
+    │   ├── mistral.py
+    │   ├── qwen.py
+    │   └── extensions/
+    │       ├── __init__.py
+    │       ├── base_extension.py
+    │       ├── deepseek_extension.py
+    │       ├── default_extension.py
+    │       ├── gemma_extension.py
+    │       ├── llama_extension.py
+    │       ├── mistral_extension.py
+    │       └── qwen_extension.py
+    ├── ollama/
+    │   ├── __init__.py
+    │   ├── check.py
+    │   ├── client.py
+    │   ├── exceptions.py
+    │   └── ollama.py
+    ├── modelfile/
+    │   ├── __init__.py
+    │   ├── error.py
+    │   ├── modelfile.py
+    │   └── temporary.py
+    └── presets/
+        ├── __init__.py
+        ├── balanced.py
+        ├── coder.py
+        ├── coder_balanced.py
+        ├── coder_fast.py
+        ├── creative.py
+        ├── long_context.py
+        └── model.py
 ```
 
-## Dev Commands
+### SOLID Package Patterns
+
+Each package follows these rules:
+- **One class/concept per file** - Each file has a single responsibility
+- **`__init__.py` with public API** - Re-export from submodules for clean interface
+- **Backwards-compatible wrapper** - Keep flat imports working (e.g., `ollama/ollama.py`)
+- **Relative imports inside packages** - Use `from .exceptions import ...`
+- **Separate files for** - Exceptions, helpers, main logic
+
+### Import Patterns
+
+| Pattern | Example |
+|---------|---------|
+| Package import | `from ai.ollama import OllamaClient` |
+| Submodule import | `from ai.ollama.client import OllamaClient` |
+| Direct function | `from ai.ollama.check import check_ollama_installed` |
+| Via ai module | `from ai import ollama; ollama.check_ollama_installed()` |
+| Model import | `from ai.models import get_configs_for_model, detect_model_family` |
+| Preset import | `from ai.presets import PRESETS, list_preset_names` |
+
+### Naming Conventions
+
+- **Avoid redundant suffixes** - Use `balanced.py` not `balanced_preset.py`, `model.py` not `model_presets.py`
+- **Package folders** - Use singular (e.g., `ollama/`, `modelfile/`, not `ollamas/`, `modelfiles/`)
+- **Dataclasses for data** - Use `@dataclass(frozen=True)` for immutable config objects
+- **Abstract base classes** - Use ABC for interfaces (e.g., `BaseExtension`)
+
+### Configuration System
+
+- Each model family (Llama, Deepseek, Qwen, Gemma, Mistral, Default) has: `normal`, `coder`, `coder_fast`, `explained`
+- Models use extensions for customizable behavior (via `_build_system` method)
+- Extensions follow `BaseExtension` abstract class with: `get_normal()`, `get_coder()`, `get_coder_fast()`, `get_explained()`
+- `get_configs_for_model()` merges base configs with presets
+- Model detection via `detect_model_family()` in `ai/config/`
+
+### Dev Commands
 
 ```bash
-# Test
-pytest tests/
-
-# Lint
-ruff check src/ tests/
-
-# Format (line-length 100)
-black src/ tests/
-
-# Type check (targets py39)
-mypy src/
+pytest tests/        # Test
+ruff check src/       # Lint
+black src/            # Format
+mypy src/             # Type check
 ```
 
-## Configuration System
+### Test Status
 
-- Each model family (Llama, Deepseek, Qwen, Gemma, Mistral, Default) has `normal` and `tweak` configs
-- `get_configs_for_model()` merges base configs with presets from `presets.py`
-- `display_config_options()` shows a table with: #, Name, num_ctx, temperature, num_predict
-
-## Test Setup
-
-`tests/conftest.py` manually adds `src/` to `sys.path` to resolve the flat module imports.
+Tests in `tests/` need updating to work with the new package structure.

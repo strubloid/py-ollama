@@ -26,6 +26,7 @@ classifiers = [
 
 [project.scripts]
 py-ollama = "cli:main"
+gen-tree = "scripts:main"
 
 [project.optional-dependencies]
 dev = [
@@ -37,11 +38,9 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["models"]
-py-modules = ["cli", "modelfile", "ollama", "presets"]
-
-[tool.setuptools.package-dir]
-"" = "src"
+packages = ["ai", "ai.config", "ai.models", "ai.models.extensions", "ai.ollama", "ai.modelfile", "ai.presets", "helpers", "scripts"]
+py-modules = ["cli"]
+package-dir = {"" = "src"}
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
