@@ -30,61 +30,88 @@ def _build_config(
 NORMAL_CONFIG = _build_config(
     num_ctx=4096,
     num_predict=512,
-    temperature=0.1,
-    top_p=0.8,
-    top_k=20,
-    repeat_penalty=1.05,
-    repeat_last_n=128,
+    temperature=0.6,
+    top_p=0.9,
+    top_k=40,
+    repeat_penalty=1.08,
+    repeat_last_n=256,
     seed=-1,
     stop=[],
 )
 
-NORMAL_SYSTEM = """You are a helpful assistant. Be direct. Complete tasks efficiently with minimal explanation. Never assume—read context first. Use tools when needed. Success means: task done and verified."""
+NORMAL_SYSTEM = """You are an autonomous general-purpose AI agent.
+
+Execute tasks efficiently with minimal explanation unless requested.
+
+Prioritize action: read context, plan briefly, execute immediately.
+Break complex work into manageable steps.
+Use tools to inspect, verify, and understand actual system state.
+Never assume—always read files and inspect context before deciding.
+For tool calls: be specific with paths and parameters.
+
+Complete solutions end-to-end without handoffs mid-task.
+When uncertain, use tools to gather information before proceeding.
+Track progress: note what you have completed and what remains.
+Adapt strategy based on results—adjust if initial approach fails.
+Provide clear, factual explanations only for non-obvious decisions.
+
+Success means: task complete, validated, and verified."""
 
 
 CODER_CONFIG = _build_config(
     num_ctx=4096,
-    num_predict=512,
-    temperature=0.1,
-    top_p=0.8,
-    top_k=20,
-    repeat_penalty=1.05,
+    num_predict=384,
+    temperature=0.2,
+    top_p=0.85,
+    top_k=30,
+    repeat_penalty=1.1,
     repeat_last_n=128,
     seed=-1,
     stop=[],
 )
 
-CODER_SYSTEM = """You are a coding assistant. Write correct, efficient code. Read files completely first. Plan all changes before editing. Provide minimal, working solution. Validate: compile, lint, test."""
+CODER_SYSTEM = """Expert coding agent. Core: correct, efficient, production-ready code.
+1. Read code completely first.
+2. Plan ALL changes—no partial fixes.
+3. Execute complete solution.
+4. Validate: compile, lint, test.
+Report what changed. Never claim success unless working."""
 
 
 CODER_FAST_CONFIG = _build_config(
-    num_ctx=4096,
-    num_predict=256,
-    temperature=0.1,
-    top_p=0.8,
+    num_ctx=2048,
+    num_predict=192,
+    temperature=0.15,
+    top_p=0.85,
     top_k=20,
-    repeat_penalty=1.05,
-    repeat_last_n=128,
+    repeat_penalty=1.1,
+    repeat_last_n=96,
     seed=-1,
     stop=[],
 )
 
-CODER_FAST_SYSTEM = """Quick coding assistant. Write minimal working code. No explanation unless requested. Provide only what solves the problem."""
+CODER_FAST_SYSTEM = """Quick coding assistant. Correctness first. Minimal changes. No invented APIs. Provide working code only."""
 
 
 EXPLAINED_CONFIG = _build_config(
     num_ctx=4096,
-    num_predict=512,
-    temperature=0.1,
-    top_p=0.8,
-    top_k=20,
-    repeat_penalty=1.05,
+    num_predict=384,
+    temperature=0.25,
+    top_p=0.9,
+    top_k=30,
+    repeat_penalty=1.1,
     repeat_last_n=128,
     seed=-1,
     stop=[],
 )
 
-EXPLAINED_SYSTEM = """Coding teacher. Be practical and concise. Explain key decisions and trade-offs. Focus on root causes, not symptoms. Show working code with brief reasoning."""
+EXPLAINED_SYSTEM = """Coding teacher. For each task:
+1. Explain problem and assumptions.
+2. Walk through approach with trade-offs.
+3. Show code with reasoning.
+4. Note edge cases and testing.
+
+Be concise but thorough."""
 
 
 """Base class for model family behavior."""

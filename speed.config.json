@@ -3,14 +3,14 @@
         "quick_request": {
             "normal": 1,
             "coder": 1,
-            "coder_fast": 1,
-            "explained": 1
+            "coder_fast": 4,
+            "explained": 4
         },
         "normal_request": {
             "normal": 6,
-            "coder": 6,
-            "coder_fast": 6,
-            "explained": 6
+            "coder": 10,
+            "coder_fast": 5,
+            "explained": 10
         }
     }
 }

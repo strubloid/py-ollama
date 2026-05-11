@@ -3,11 +3,20 @@
 import json
 import subprocess
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 CONFIG_FILE = Path(__file__).parent.parent / "speed.config.json"
 TEST_MODEL = "qwen2.5-coder:14b"
-CREATED_MODELS = []
+WARMUP_PROMPT = "ok"
+CREATED_MODELS: list[str] = []
+
+CONFIGS = [
+    ("1", "normal", "Normal (Recommended)"),
+    ("2", "coder", "Coder"),
+    ("3", "coder_fast", "Coder Fast"),
+    ("4", "explained", "Explained"),
+]
 
 
 def load_config() -> dict:
@@ -18,23 +27,14 @@ def load_config() -> dict:
         return json.load(f)
 
 
-def run_ollama_prompt(model_name: str, prompt: str, max_time: float, warmup: bool = False) -> tuple[float, str]:
-    if warmup:
-        subprocess.run(
-            ["ollama", "run", model_name, prompt],
-            capture_output=True,
-            text=True,
-            timeout=max_time + 5,
-        )
-        return 0.0, ""
-
+def run_prompt(model_name: str, prompt: str, timeout: float) -> tuple[float, str]:
     start_time = time.time()
 
     result = subprocess.run(
         ["ollama", "run", model_name, prompt],
         capture_output=True,
         text=True,
-        timeout=max_time + 5,
+        timeout=timeout,
     )
 
     elapsed = time.time() - start_time
@@ -59,119 +59,114 @@ def create_model(model_name: str, config_num: str) -> None:
     CREATED_MODELS.append(model_name)
 
 
+def warmup_model(model_name: str) -> None:
+    subprocess.run(
+        ["ollama", "run", model_name, WARMUP_PROMPT],
+        capture_output=True,
+        text=True,
+        timeout=15,
+    )
+
+
+def warmup_parallel(model_names: list[str], max_workers: int = 4) -> None:
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        executor.map(warmup_model, model_names)
+
+
 def cleanup_models() -> None:
     for model in CREATED_MODELS:
         try:
-            subprocess.run(
-                ["ollama", "rm", model],
-                capture_output=True,
-                timeout=10,
-            )
-            print(f"  Cleaned up: {model}")
-        except Exception as e:
-            print(f"  Failed to clean up {model}: {e}")
+            subprocess.run(["ollama", "rm", model], capture_output=True, timeout=10)
+        except Exception:
+            pass
 
 
-def run_test(prompt: str, prefix: str, request_type: str) -> None:
-    
+def print_row(config_name: str, model_name: str, response: str, elapsed: float, max_time: float, passed: bool) -> None:
+    status = "PASS" if passed else "FAIL"
+    truncated = response[:40] + "..." if len(response) > 40 else response
+    print(f"{config_name:24} | {model_name:12} | {truncated:43} | {elapsed:5.2f}s / {max_time}s - {status}")
+
+
+def run_benchmark(prompt: str, prefix: str, request_type: str) -> list[dict]:
     config = load_config()
     config_limits = config.get("config_limits", {}).get(request_type, {})
 
-    print(f"Prompt: {prompt}")
+    print(f"\nPrompt: {prompt}")
     print(f"Request type: {request_type}")
     print(f"Limits: {config_limits}")
-    print("=" * 60)
+    print("=" * 100)
+    print(f"{'Test name':24} | {'name machine':12} | {'response':43} | time")
+    print("-" * 100)
 
-    configs = [
-        ("1", "normal", "Normal (Recommended)"),
-        ("2", "coder", "Coder"),
-        ("3", "coder_fast", "Coder Fast"),
-        ("4", "explained", "Explained"),
-    ]
+    model_names = []
+    for config_num, _, _ in CONFIGS:
+        model_name = f"{prefix}_{config_num}"
+        create_model(model_name, config_num)
+        model_names.append(model_name)
+
+    warmup_parallel(model_names)
 
     results = []
+    for config_num, config_key, config_name in CONFIGS:
+        model_name = f"{prefix}_{config_num}"
+        max_time = config_limits.get(config_key, 5)
 
-    try:
-        for config_num, config_key, config_name in configs:
-            model_name = f"{prefix}_{config_num}"
-            max_time = config_limits.get(config_key, 5)
+        try:
+            elapsed, response = run_prompt(model_name, prompt, max_time + 5)
+            passed = elapsed <= max_time
+        except subprocess.TimeoutExpired:
+            elapsed, response = max_time + 5, "TIMEOUT"
+            passed = False
 
-            print(f"\n--- Testing {config_name} ({config_num}) ---")
+        results.append({
+            "model": model_name,
+            "config": config_name,
+            "response": response,
+            "elapsed": elapsed,
+            "max": max_time,
+            "passed": passed,
+        })
 
-            create_model(model_name, config_num)
-            print(f"Created: {model_name}")
+        print_row(config_name, model_name, response, elapsed, max_time, passed)
 
-            print("  Warming up...")
-            run_ollama_prompt(model_name, "hi", max_time, warmup=True)
+    for model in model_names:
+        try:
+            subprocess.run(["ollama", "rm", model], capture_output=True, timeout=10)
+        except Exception:
+            pass
 
-            try:
-                elapsed, response = run_ollama_prompt(model_name, prompt, max_time)
-                passed = elapsed <= max_time
+    print("=" * 100)
 
-                results.append({
-                    "model": model_name,
-                    "config": config_name,
-                    "elapsed": elapsed,
-                    "max": max_time,
-                    "passed": passed,
-                    "response": response[:50] + "..." if len(response) > 50 else response,
-                })
-
-                status = "PASS" if passed else "FAIL"
-                print(f"Response: {results[-1]['response']}")
-                print(f"Response time: {elapsed:.2f}s / {max_time}s - {status}")
-
-            except subprocess.TimeoutExpired:
-                elapsed = max_time + 5
-                results.append({
-                    "model": model_name,
-                    "config": config_name,
-                    "elapsed": elapsed,
-                    "max": max_time,
-                    "passed": False,
-                    "response": "TIMEOUT",
-                })
-                print("Response: TIMEOUT")
-                print("Response time: TIMEOUT - FAIL")
-
-    finally:
-        print("\n" + "=" * 60)
-        print("Cleanup")
-        print("=" * 60)
-        cleanup_models()
-
-    print("\n" + "=" * 60)
-    print("Summary")
-    print("=" * 60)
-
-    for r in results:
-        status = "PASS" if r["passed"] else "FAIL"
-        print(
-            f"{r['model']:12} {r['config']:20} "
-            f"{r['elapsed']:6.2f}s / {r['max']}s - {status}"
-        )
-
-    print("=" * 60)
-
-    failed = [r for r in results if not r["passed"]]
-    if failed:
-        failed_names = ", ".join(r["model"] for r in failed)
-        raise AssertionError(f"Failed models: {failed_names}")
-
-    print("Test passed!\n")
+    return results
 
 
 def test_model_response_time() -> None:
-    
-    print("Model Response Time Tests")
     print(f"Model: {TEST_MODEL}")
 
-    run_test("What is your name?", "rafael", "quick_request")
-    run_test("What are your principles?", "principles", "normal_request")
+    benchmarks = [
+        ("What is your name?", "rafael", "quick_request"),
+        ("What are your principles?", "principles", "normal_request"),
+    ]
 
-    print("ALL TESTS PASSED!")
-    print("=" * 60)
+    all_passed = True
+
+    for prompt, prefix, request_type in benchmarks:
+        results = run_benchmark(prompt, prefix, request_type)
+
+        if any(not r["passed"] for r in results):
+            all_passed = False
+            failed = [r["model"] for r in results if not r["passed"]]
+            print(f"FAILED: {', '.join(failed)}\n")
+
+    print("ALL TESTS PASSED!" if all_passed else "SOME TESTS FAILED")
+    
+
+    if not all_passed:
+        raise AssertionError("Some benchmarks failed")
 
 
 if __name__ == "__main__":
-    test_model_response_time()
+    try:
+        test_model_response_time()
+    finally:
+        cleanup_models()

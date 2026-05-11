@@ -7,15 +7,20 @@ from dataclasses import dataclass
 class CoderPreset:
     name: str = "Coder"
     config: str = """PARAMETER num_ctx 4096
-PARAMETER num_predict 512
-PARAMETER temperature 0.1
-PARAMETER top_p 0.8
-PARAMETER top_k 20
-PARAMETER repeat_penalty 1.05
+PARAMETER num_predict 384
+PARAMETER temperature 0.2
+PARAMETER top_p 0.85
+PARAMETER top_k 30
+PARAMETER repeat_penalty 1.1
 PARAMETER repeat_last_n 128
 PARAMETER seed -1
 PARAMETER stop []"""
-    system: str = """You are a coding assistant. Write correct, efficient code. Read files completely first. Plan all changes before editing. Provide minimal, working solution. Validate: compile, lint, test."""
+    system: str = """Expert coding agent. Core: correct, efficient, production-ready code.
+1. Read code completely first.
+2. Plan ALL changes—no partial fixes.
+3. Execute complete solution.
+4. Validate: compile, lint, test.
+Report what changed. Never claim success unless working."""
 
 
 CODER = CoderPreset()
