@@ -10,102 +10,98 @@ from ai.models import (
     detect_model_family,
 )
 
-
+"""Tests for model family registry."""
 class TestModelFamilies:
-    """Tests for model family registry."""
 
+    """Test that all model families are in registry."""
     def test_all_families_registered(self):
-        """Test that all model families are in registry."""
         assert "llama" in MODEL_FAMILIES
         assert "deepseek" in MODEL_FAMILIES
         assert "qwen" in MODEL_FAMILIES
         assert "gemma" in MODEL_FAMILIES
         assert "mistral" in MODEL_FAMILIES
         assert "devstral" in MODEL_FAMILIES
-
-    def test_families_are_classes(self):
-        """Test that registry contains classes."""
+    
+    """Test that registry contains classes."""
+    def test_families_are_classes(self):    
         for key, cls in MODEL_FAMILIES.items():
             assert isinstance(cls, type)
 
-
+"""Tests for get_configs_for_model function."""
 class TestGetConfigsForModel:
-    """Tests for get_configs_for_model function."""
 
+    """Test that function returns a dictionary."""
     def test_returns_dict(self):
-        """Test that function returns a dictionary."""
         result = get_configs_for_model("llama2")
         assert isinstance(result, dict)
-
-    def test_contains_normal_config(self):
-        """Test that result contains normal config."""
+    
+    """Test that result contains normal config."""
+    def test_contains_normal_config(self):    
         result = get_configs_for_model("llama2")
         assert "normal" in result
-
-    def test_contains_coder_config(self):
-        """Test that result contains coder config."""
+    
+    """Test that result contains coder config."""
+    def test_contains_coder_config(self):    
         result = get_configs_for_model("llama2")
         assert "coder" in result
-
-    def test_accepts_custom_name(self):
-        """Test that custom name parameter is accepted."""
+    
+    """Test that custom name parameter is accepted."""
+    def test_accepts_custom_name(self):    
         result = get_configs_for_model("llama2", "MyBot")
         assert isinstance(result, dict)
 
-
+"""Tests for mode getter functions."""
 class TestGetModes:
-    """Tests for mode getter functions."""
 
+    """Test get_normal_mode returns config."""
     def test_get_normal_mode(self):
-        """Test get_normal_mode returns config."""
         config = get_normal_mode("llama2")
         assert config is not None
-
-    def test_get_coder_mode(self):
-        """Test get_coder_mode returns config."""
+    
+    """Test get_coder_mode returns config."""
+    def test_get_coder_mode(self):    
         config = get_coder_mode("llama2")
         assert config is not None
-
-    def test_get_coder_fast_mode(self):
-        """Test get_coder_fast_mode returns config."""
+    
+    """Test get_coder_fast_mode returns config."""
+    def test_get_coder_fast_mode(self):    
         config = get_coder_fast_mode("llama2")
         assert config is not None
-
-    def test_get_explained_mode(self):
-        """Test get_explained_mode returns config."""
+    
+    """Test get_explained_mode returns config."""
+    def test_get_explained_mode(self):    
         config = get_explained_mode("llama2")
         assert config is not None
 
-
+"""Tests for detect_model_family function."""
 class TestDetectModelFamily:
-    """Tests for detect_model_family function."""
-
-    def test_detects_llama(self):
-        """Test that llama models are detected."""
+    
+    """Test that llama models are detected."""
+    def test_detects_llama(self):    
         result = detect_model_family("llama2")
         assert "llama" in result.lower()
-
-    def test_detects_deepseek(self):
-        """Test that deepseek models are detected."""
+    
+    """Test that deepseek models are detected."""
+    def test_detects_deepseek(self):    
         result = detect_model_family("deepseek-coder")
         assert "deepseek" in result.lower()
-
-    def test_detects_qwen(self):
-        """Test that qwen models are detected."""
+    
+    """Test that qwen models are detected."""
+    def test_detects_qwen(self):    
         result = detect_model_family("qwen2.5")
         assert "qwen" in result.lower()
-
-    def test_detects_gemma(self):
-        """Test that gemma models are detected."""
+    
+    """Test that gemma models are detected."""
+    def test_detects_gemma(self):    
         result = detect_model_family("gemma2")
         assert "gemma" in result.lower()
-
-    def test_detects_mistral(self):
-        """Test that mistral models are detected."""
+    
+    """Test that mistral models are detected."""
+    def test_detects_mistral(self):    
         result = detect_model_family("mistral")
         assert "mistral" in result.lower()
-
-    def test_detects_devstral(self):
-        """Test that devstral is detected."""
+    
+    """Test that devstral is detected."""
+    def test_detects_devstral(self):    
         detect_model_family("devstral")
         assert "mistral" in MODEL_FAMILIES

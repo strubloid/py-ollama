@@ -1,5 +1,3 @@
-"""Tests for ollama client module."""
-
 import subprocess
 
 import pytest
@@ -8,19 +6,19 @@ from ai.ollama.client import OllamaClient
 from ai.ollama.exceptions import OllamaCommandError
 
 
+"""Create an OllamaClient instance."""
 @pytest.fixture
 def client():
-    """Create an OllamaClient instance."""
     return OllamaClient()
 
 
+"""Tests for list_models method."""
 class TestListModels:
-    """Tests for list_models method."""
 
+    """Test that list_models returns a list of model names."""
     @patch("subprocess.run")
     @patch("ai.ollama.client.require_ollama")
     def test_returns_list_of_model_names(self, mock_require, mock_run, client):
-        """Test that list_models returns a list of model names."""
         mock_result = MagicMock()
         mock_result.stdout = """NAME                ID          SIZE      MODIFIED
 llama2              abc123      3.8GB     2 days ago
@@ -32,10 +30,10 @@ mistral             def456      4.1GB     3 days ago
 
         assert models == ["llama2", "mistral"]
 
+    """Test that OllamaCommandError is raised when no models found."""
     @patch("subprocess.run")
     @patch("ai.ollama.client.require_ollama")
     def test_raises_when_no_models(self, mock_require, mock_run, client):
-        """Test that OllamaCommandError is raised when no models found."""
         mock_result = MagicMock()
         mock_result.stdout = "NAME"
         mock_run.return_value = mock_result
@@ -43,23 +41,23 @@ mistral             def456      4.1GB     3 days ago
         with pytest.raises(OllamaCommandError):
             client.list_models()
 
+    """Test that OllamaCommandError is raised on command failure."""
     @patch("subprocess.run")
     @patch("ai.ollama.client.require_ollama")
     def test_raises_on_command_failure(self, mock_require, mock_run, client):
-        """Test that OllamaCommandError is raised on command failure."""
         mock_run.side_effect = subprocess.CalledProcessError(1, "ollama ls", stderr="command failed")
 
         with pytest.raises(OllamaCommandError):
             client.list_models()
 
 
+"""Tests for create_model method."""
 class TestCreateModel:
-    """Tests for create_model method."""
 
+    """Test that create_model runs successfully."""
     @patch("subprocess.run")
     @patch("ai.ollama.client.require_ollama")
     def test_creates_model_successfully(self, mock_require, mock_run, client):
-        """Test that create_model runs successfully."""
         mock_result = MagicMock()
         mock_result.stdout = "Creating model... Done"
         mock_run.return_value = mock_result
@@ -73,23 +71,23 @@ class TestCreateModel:
             check=True,
         )
 
+    """Test that OllamaCommandError is raised on failure."""
     @patch("subprocess.run")
     @patch("ai.ollama.client.require_ollama")
     def test_raises_on_command_failure(self, mock_require, mock_run, client):
-        """Test that OllamaCommandError is raised on failure."""
         mock_run.side_effect = subprocess.CalledProcessError(1, "cmd", stderr="create failed")
 
         with pytest.raises(OllamaCommandError):
             client.create_model("my-model", "/path/to/modelfile")
 
 
+"""Tests for delete_model method."""
 class TestDeleteModel:
-    """Tests for delete_model method."""
 
+    """Test that delete_model runs successfully."""
     @patch("subprocess.run")
     @patch("ai.ollama.client.require_ollama")
     def test_deletes_model_successfully(self, mock_require, mock_run, client):
-        """Test that delete_model runs successfully."""
         mock_result = MagicMock()
         mock_run.return_value = mock_result
 
@@ -102,10 +100,10 @@ class TestDeleteModel:
             check=True,
         )
 
+    """Test that OllamaCommandError is raised on failure."""
     @patch("subprocess.run")
     @patch("ai.ollama.client.require_ollama")
     def test_raises_on_command_failure(self, mock_require, mock_run, client):
-        """Test that OllamaCommandError is raised on failure."""
         mock_run.side_effect = subprocess.CalledProcessError(1, "cmd", stderr="delete failed")
 
         with pytest.raises(OllamaCommandError):

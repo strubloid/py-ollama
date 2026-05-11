@@ -134,4 +134,11 @@ mypy src/             # Type check
 
 ### Test Status
 
-All tests passing (25 tests). Run `pytest tests/` to verify.
+All tests passing (71 tests). Run `pytest tests/` to verify.
+
+### Verification Commands
+
+```bash
+pytest tests/        # 71 tests
+ruff check src/ tests/  # Lint
+```
