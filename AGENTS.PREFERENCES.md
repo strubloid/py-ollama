@@ -7,6 +7,7 @@ Guidance for writing code that is maintainable, scalable, and easy to understand
 ## Project Structure
 
 ### General Guidelines
+
 - Separate concerns: UI, business logic, data access, configuration
 - Keep related files together (co-location principle)
 - Feature-based structure preferred over type-based for large projects
@@ -14,6 +15,7 @@ Guidance for writing code that is maintainable, scalable, and easy to understand
 - Use clear, descriptive directory names
 
 ### Layer Separation
+
 ```
 src/
 ├── features/          # Feature-based modules
@@ -33,31 +35,41 @@ src/
 ## SOLID Principles
 
 ### S - Single Responsibility Principle
+
 A module should have one reason to change.
+
 - One class, one responsibility
 - Functions do one thing well
 - When describing a class and you use "and", split it
 
 ### O - Open/Closed Principle
+
 Open for extension, closed for modification.
+
 - Add new behavior by adding new code, not changing existing
 - Use inheritance, composition, polymorphism
 - Strategy pattern for interchangeable behaviors
 
 ### L - Liskov Substitution Principle
+
 Subtypes must be substitutable for their base types.
+
 - Child classes must honor contracts of parent classes
 - Don't weaken preconditions, don't strengthen postconditions
 - If `is-a` doesn't hold, prefer composition over inheritance
 
 ### I - Interface Segregation Principle
+
 Prefer small, focused interfaces over large ones.
+
 - Clients shouldn't depend on methods they don't use
 - Single-method interfaces are fine (e.g., `Callable`, `Iterable`)
 - Role-based interfaces (e.g., `Reader`, `Writer`)
 
 ### D - Dependency Inversion Principle
+
 Depend on abstractions, not concretions.
+
 - High-level modules shouldn't depend on low-level modules
 - Use interfaces to decouple
 - Inject dependencies (constructor injection preferred)
@@ -70,6 +82,7 @@ Depend on abstractions, not concretions.
 
 **Factory Pattern**
 Use when: Object creation involves complex logic or different types need to be created based on conditions.
+
 ```python
 class ParserFactory:
     def create_parser(self, format: str) -> Parser:
@@ -86,6 +99,7 @@ class ParserFactory:
 
 **Builder Pattern**
 Use when: Object construction requires many steps or optional parameters.
+
 ```python
 @dataclass
 class QueryBuilder:
@@ -102,6 +116,7 @@ class QueryBuilder:
 
 **Singleton / Dependency Injection**
 Prefer DI over Singleton. Use DI container or factory when multiple implementations needed.
+
 ```python
 # Instead of Singleton
 class DatabaseConnection:
@@ -117,6 +132,7 @@ class UserService:
 
 **Adapter Pattern**
 Use when: Need to make incompatible interfaces work together.
+
 ```python
 class ExternalServiceAdapter:
     def __init__(self, external_client):
@@ -129,6 +145,7 @@ class ExternalServiceAdapter:
 
 **Facade Pattern**
 Use when: Complex subsystem needs simplified interface.
+
 ```python
 class OrderFacade:
     def __init__(self, inventory, payment, shipping):
@@ -144,6 +161,7 @@ class OrderFacade:
 
 **Composition over Inheritance**
 Use when: Need shared behavior between unrelated classes.
+
 ```python
 class Logger:
     def log(self, message):
@@ -163,6 +181,7 @@ class WithLogging:
 
 **Strategy Pattern**
 Use when: Multiple algorithms for a task and need to swap at runtime.
+
 ```python
 class SortStrategy:
     def sort(self, data: list) -> list: ...
@@ -177,6 +196,7 @@ class DataProcessor:
 
 **Observer Pattern**
 Use when: One object needs to notify multiple others of state changes.
+
 ```python
 class EventBus:
     def __init__(self):
@@ -192,6 +212,7 @@ class EventBus:
 
 **Template Method**
 Use when: Algorithm with customizable steps.
+
 ```python
 class DataPipeline:
     def process(self, data):
@@ -208,6 +229,7 @@ class DataPipeline:
 
 **Command Pattern**
 Use when: Encapsulate operations as objects, support undo/redo, queue operations.
+
 ```python
 @dataclass
 class Command:
@@ -226,12 +248,14 @@ class CreateOrderCommand(Command):
 ## Code Organization
 
 ### General Rules
+
 - Flat is better than nested
 - Colocation: tests near source, config near usage
 - Explicit over implicit (explicit imports, explicit types)
 - Orthogonal code: one change should affect minimal places
 
 ### Functions
+
 - Small: prefer < 20 lines
 - Do one thing
 - Prefer pure functions (same input → same output, no side effects)
@@ -239,6 +263,7 @@ class CreateOrderCommand(Command):
 - Use keyword arguments for clarity
 
 ### Classes
+
 - Keep small: < 200 lines
 - Single responsibility
 - Use dataclasses for data containers
@@ -246,19 +271,21 @@ class CreateOrderCommand(Command):
 - Private by default (prefix `_`), no pseudoprivate (`__`)
 
 ### Modules
+
 - Clear public API (`__all__`)
 - Group imports: stdlib, third-party, local
 - One module = one concept
 
 ### Naming
-| Thing | Convention | Example |
-|-------|-----------|---------|
-| Files | snake_case | `user_service.py` |
-| Classes | PascalCase | `UserService` |
-| Functions | snake_case | `get_user_by_id` |
-| Constants | SCREAMING_SNAKE | `MAX_RETRIES` |
-| Private | leading underscore | `_internal` |
-| Type variables | PascalCase | `T`, `Result` |
+
+| Thing          | Convention         | Example           |
+| -------------- | ------------------ | ----------------- |
+| Files          | snake_case         | `user_service.py` |
+| Classes        | PascalCase         | `UserService`     |
+| Functions      | snake_case         | `get_user_by_id`  |
+| Constants      | SCREAMING_SNAKE    | `MAX_RETRIES`     |
+| Private        | leading underscore | `_internal`       |
+| Type variables | PascalCase         | `T`, `Result`     |
 
 ---
 
@@ -269,6 +296,7 @@ class CreateOrderCommand(Command):
 - Include context in exceptions (message, values)
 - Never swallow exceptions silently
 - Use result types for expected failures (prevents exceptions for control flow)
+
 ```python
 @dataclass
 class Result[T]:
@@ -310,11 +338,39 @@ class Result[T]:
 - Co-locate tests with source
 - Use fixtures for shared setup
 
+### Docstring Placement
+
+Docstrings go **directly above** the function/class definition, with no blank lines:
+
+```python
+# Correct
+"""Description of what this does."""
+def my_function():
+    pass
+
+
+# Incorrect (extra blank lines)
+def my_function():
+
+    """Description of what this does."""
+
+    pass
+
+# Also incorrect (docstring below def + blank line after)
+def my_function():
+    """Description."""
+
+    pass
+```
+
+This applies to test functions as well.
+
 ---
 
 ## Refactoring Checklist
 
 When modifying code:
+
 - [ ] Single responsibility maintained or improved?
 - [ ] Dependencies injected (not hardcoded)?
 - [ ] Can I understand the change without reading unrelated code?

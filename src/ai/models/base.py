@@ -124,7 +124,6 @@ When replying:
 - Mention validation commands when useful, such as typecheck, lint, tests, or build.
 - Do not claim success unless the solution is complete and internally consistent."""
 
-
 EXPLAINED_CONFIG = _build_config(
     num_ctx=16384,
     num_predict=4096,
@@ -156,25 +155,25 @@ When making choices (algorithms, patterns, libraries):
 Be thorough but not verbose. Focus on non-obvious decisions and anything that might confuse a reader. Your goal is to teach, so another engineer should be able to understand and maintain the code after reading your explanation."""
 
 
+"""Base class for model family behavior."""
 class BaseModelFamily:
-    """Base class for model family behavior."""
 
     modes = ("normal", "coder", "coder_fast", "explained")
     family_name: str = ""
     model_name: str = ""
-
+    
+    """Collect all available mode configurations."""
     def get_all(self, custom_name: str = "") -> dict[str, ModelConfig]:
-        """Collect all available mode configurations."""
         return {
             mode: getattr(self, mode)(custom_name)
             for mode in self.modes
         }
-
+    
+    """Return the model's assigned name with instruction to use it."""
     def getModelName(self, custom_name: str = "") -> str:
-        """Return the model's assigned name with instruction to use it."""
         name = custom_name if custom_name else self.model_name
         return f"Identity: You are {name}. Always identify yourself by this name when asked."
-
+    
+    """Return general model-specific profile. Override in subclasses."""
     def model_profile(self) -> str:
-        """Return general model-specific profile. Override in subclasses."""
         return ""

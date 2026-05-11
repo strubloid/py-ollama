@@ -1,18 +1,16 @@
-"""Model family detection and configuration lookup."""
-
 import re
 
+"""
+Detect model family from model name.
 
+Args:
+    model_name: Model name (e.g., 'llama2:latest', 'deepseek-coder')
+
+Returns:
+    Model family name (lowercase)
+"""
 def detect_model_family(model_name: str) -> str:
-    """
-    Detect model family from model name.
-
-    Args:
-        model_name: Model name (e.g., 'llama2:latest', 'deepseek-coder')
-
-    Returns:
-        Model family name (lowercase)
-    """
+    
     name = model_name.lower().split(':')[0]
 
     patterns = {

@@ -1,5 +1,3 @@
-"""Qwen model configurations (2.5-coder, etc)."""
-
 from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
 from .extensions.qwen_extension import QwenExtension
