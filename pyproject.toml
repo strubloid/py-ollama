@@ -26,7 +26,7 @@ classifiers = [
 
 [project.scripts]
 py-ollama = "cli:main"
-gen-tree = "scripts:main"
+py-ollama-refresh = "scripts:refresh"
 
 [project.optional-dependencies]
 dev = [

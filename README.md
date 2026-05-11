@@ -42,7 +42,7 @@ pip install -e ".[dev]"
 Run the interactive CLI:
 
 ```bash
-ollama-tweak-advanced
+py-ollama
 ```
 
 The tool will guide you through:
@@ -54,24 +54,13 @@ The tool will guide you through:
 
 ## Project Structure
 
+The current directory structure is maintained in [`AGENTS.md`](AGENTS.md). To update it after making changes:
+
+```bash
+py-ollama-refresh
 ```
-ollama-tweak-advanced/
-├── pyproject.toml               # Project metadata and dependencies
-├── README.md                    # This file
-├── CONTRIBUTING.md              # Contribution guidelines
-├── LICENSE                      # MIT License
-├── src/
-│   └── ollama_tweak_advanced/
-│       ├── __init__.py          # Package initialization
-│       ├── cli.py               # Interactive CLI implementation
-│       ├── presets.py           # Preset configurations and system prompts
-│       ├── ollama.py            # Ollama command-line interaction
-│       └── modelfile.py         # Modelfile generation and temporary file handling
-└── tests/
-    ├── conftest.py              # Test configuration
-    ├── test_modelfile.py        # Tests for Modelfile generation
-    └── test_presets.py          # Tests for preset definitions
-```
+
+This will regenerate the directory tree in the documentation.
 
 ## Module Documentation
 
