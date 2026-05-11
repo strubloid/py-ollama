@@ -1,11 +1,8 @@
-"""Deepseek model extensions."""
-
 from ..base import BaseModelFamily
 from .base_extension import BaseExtension
 
-
-class DeepseekExtension(BaseExtension):
-    """Extensions for Deepseek model."""
+"""Extensions for Deepseek model."""
+class DeepseekExtension(BaseExtension):   
 
     @staticmethod
     def get_normal(custom_name: str = "") -> str:

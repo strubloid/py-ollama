@@ -2,9 +2,8 @@
 
 from abc import ABC, abstractmethod
 
-
+"""Base class for model extensions."""
 class BaseExtension(ABC):
-    """Base class for model extensions."""
 
     @staticmethod
     @abstractmethod

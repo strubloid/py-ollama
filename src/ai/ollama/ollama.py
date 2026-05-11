@@ -1,5 +1,3 @@
-"""Backwards-compatible ollama module."""
-
 from .exceptions import OllamaError, OllamaNotFoundError, OllamaCommandError
 from .check import check_ollama_installed
 from .client import OllamaClient

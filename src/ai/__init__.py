@@ -1,14 +1,12 @@
 """AI modules for Ollama interaction."""
 
 from .modelfile import (
+    ModelfileError,
     build_modelfile_content,
     write_temporary_modelfile,
     cleanup_modelfile,
+    TemporaryModelfile,
 )
-
-from .modelfile_error import ModelfileError
-
-from .temporary_modelfile import TemporaryModelfile
 
 from .ollama import (
     OllamaError,
@@ -20,7 +18,6 @@ from .ollama import (
     delete_model,
 )
 
-# Import submodules for direct access (e.g., ai.ollama.check_ollama_installed())
 from . import modelfile
 from . import ollama
 

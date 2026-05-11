@@ -1,16 +1,14 @@
-"""Ollama client for interacting with the Ollama CLI."""
-
 import subprocess
 
 from .check import require_ollama
 from .exceptions import OllamaCommandError
 
-
+"""Client for interacting with Ollama CLI."""
 class OllamaClient:
-    """Client for interacting with Ollama CLI."""
-
+    
+    """Get a list of available models from 'ollama ls'."""
     def list_models(self) -> list[str]:
-        """Get a list of available models from 'ollama ls'."""
+        
         require_ollama()
 
         try:
@@ -37,9 +35,10 @@ class OllamaClient:
             raise OllamaCommandError("No models found in 'ollama ls' output.")
 
         return models
-
+    
+    """Create a new Ollama model using the specified Modelfile."""
     def create_model(self, model_name: str, modelfile_path: str) -> None:
-        """Create a new Ollama model using the specified Modelfile."""
+        
         require_ollama()
 
         try:
@@ -54,9 +53,10 @@ class OllamaClient:
             raise OllamaCommandError(
                 f"'ollama create' failed: {e.stderr or e.stdout}"
             ) from e
-
+    
+    """Delete an Ollama model."""
     def delete_model(self, model_name: str) -> None:
-        """Delete an Ollama model."""
+        
         require_ollama()
 
         try:

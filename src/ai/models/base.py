@@ -1,8 +1,6 @@
-"""Base configuration and model family behavior for all Ollama models."""
-
 from ..config import ModelConfig
 
-
+"""Build a config string with parameters ordered by importance."""
 def _build_config(
     num_ctx: int,
     num_predict: int,
@@ -14,7 +12,6 @@ def _build_config(
     seed: int,
     stop: list,
 ) -> str:
-    """Build a config string with parameters ordered by importance."""
     lines = [
         f"PARAMETER num_ctx {num_ctx}",
         f"PARAMETER num_predict {num_predict}",

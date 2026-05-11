@@ -26,23 +26,11 @@ class TemporaryModelfile:
         self.file_path: Optional[str] = None
 
     def __enter__(self) -> str:
-        """
-        Create the temporary Modelfile.
-
-        Returns:
-            The path to the temporary Modelfile.
-        """
+        """Create the temporary Modelfile."""
         self.file_path = write_temporary_modelfile(self.content)
         return self.file_path
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        """
-        Clean up the temporary Modelfile.
-
-        Args:
-            exc_type: Exception type if an exception occurred.
-            exc_val: Exception value if an exception occurred.
-            exc_tb: Exception traceback if an exception occurred.
-        """
+        """Clean up the temporary Modelfile."""
         if self.file_path:
             cleanup_modelfile(self.file_path)

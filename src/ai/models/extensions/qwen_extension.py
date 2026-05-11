@@ -1,11 +1,8 @@
-"""Qwen model extensions."""
-
 from ..base import BaseModelFamily
 from .base_extension import BaseExtension
 
-
+"""Extensions for Qwen model."""
 class QwenExtension(BaseExtension):
-    """Extensions for Qwen model."""
 
     @staticmethod
     def get_normal(custom_name: str = "") -> str:

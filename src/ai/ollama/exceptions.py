@@ -1,19 +1,11 @@
-"""Ollama-related exceptions."""
-
-
+"""Base exception for Ollama-related errors."""
 class OllamaError(Exception):
-    """Base exception for Ollama-related errors."""
-
     pass
 
-
+"""Raised when 'ollama' command is not found."""
 class OllamaNotFoundError(OllamaError):
-    """Raised when 'ollama' command is not found."""
-
     pass
 
-
+"""Raised when an Ollama command fails."""
 class OllamaCommandError(OllamaError):
-    """Raised when an Ollama command fails."""
-
     pass

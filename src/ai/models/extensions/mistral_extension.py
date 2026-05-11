@@ -1,11 +1,8 @@
-"""Mistral model extensions."""
-
 from ..base import BaseModelFamily
 from .base_extension import BaseExtension
 
-
+"""Extensions for Mistral model."""
 class MistralExtension(BaseExtension):
-    """Extensions for Mistral model."""
 
     @staticmethod
     def get_normal(custom_name: str = "") -> str:

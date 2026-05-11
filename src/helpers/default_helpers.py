@@ -1,9 +1,7 @@
 import ai
 
-
 class UserCancelledError(Exception):
     pass
-
 
 def format_table(headers: list[str], rows: list[list[str]], col_padding: int = 2) -> str:
     """Format data as a text table."""
@@ -87,7 +85,7 @@ def display_config_options(model_configs: dict) -> str:
             raise UserCancelledError()
 
 
-def display_menu(items: list[str], title: str = "", show_table: bool = False, table_headers: list[str] = None, table_rows: list[list[str]] = None) -> str:
+def display_menu(items: list[str], title: str = "", show_table: bool = False, table_headers: list[str] | None = None, table_rows: list[list[str]] | None = None) -> str:
     if title:
         print(f"\n{title}")
 

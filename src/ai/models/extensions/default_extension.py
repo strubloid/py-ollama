@@ -1,11 +1,8 @@
-"""Default model extensions."""
-
 from ..base import BaseModelFamily
 from .base_extension import BaseExtension
 
-
+"""Default model extensions."""
 class DefaultExtension(BaseExtension):
-    """Extensions for Default model."""
 
     @staticmethod
     def get_normal(custom_name: str = "") -> str:

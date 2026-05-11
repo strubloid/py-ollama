@@ -1,11 +1,8 @@
-"""Gemma model extensions."""
-
 from ..base import BaseModelFamily
 from .base_extension import BaseExtension
 
-
+"""Gemma model extensions."""
 class GemmaExtension(BaseExtension):
-    """Extensions for Gemma model."""
 
     @staticmethod
     def get_normal(custom_name: str = "") -> str:

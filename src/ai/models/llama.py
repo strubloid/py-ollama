@@ -1,12 +1,9 @@
-"""Llama model configurations (2, 2.7b, 3, etc)."""
-
 from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
 from .extensions.llama_extension import LlamaExtension
 
-
+"""Llama model configurations (2, 2.7b, 3, etc)."""
 class Llama(BaseModelFamily):
-    """Llama model configurations."""
 
     family_name = "Llama"
     model_name = "Muu"
