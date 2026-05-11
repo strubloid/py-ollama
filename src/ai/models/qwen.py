@@ -1,17 +1,17 @@
-"""Default balanced configurations for unknown models."""
+"""Qwen model configurations (2.5-coder, etc)."""
 
-from .config import ModelConfig
+from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
 
 
-class Default(BaseModelFamily):
-    """Default balanced configurations for unknown models."""
+class Qwen(BaseModelFamily):
+    """Qwen model configurations."""
 
-    family_name = "Default"
-    model_name = "No Name"
+    family_name = "Qwen"
+    model_name = "Alibaba"
 
     def model_profile(self) -> str:
-        return "General-purpose configuration suitable for most Ollama models."
+        return "Qwen excels at multilingual and coding tasks. It has strong instruction-following and chat capabilities."
 
     def _build_system(self, base_system: str, extension: str) -> str:
         if not extension:
@@ -20,9 +20,10 @@ class Default(BaseModelFamily):
 
     def normal(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Be helpful and practical
-- Follow user instructions
-- Provide clear responses
+- Follow user instructions precisely and completely
+- Use clear, conversational language
+- Handle multilingual requests gracefully
+- Provide structured output when appropriate
 """
         return ModelConfig(
             mode="normal",
@@ -33,10 +34,12 @@ class Default(BaseModelFamily):
 
     def coder(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Write correct, maintainable code
-- Apply best practices
-- Handle errors properly
-- Test edge cases
+- Write clean, well-documented code
+- Use Qwen's multilingual strength for international codebases
+- Prioritize readable, maintainable solutions
+- Add helpful inline comments for complex logic
+- Follow language-specific best practices and idioms
+- Ensure code works across different environments
 """
         return ModelConfig(
             mode="coder",
@@ -47,8 +50,10 @@ class Default(BaseModelFamily):
 
     def coder_fast(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Quick, working solutions
-- Keep it simple
+- Provide concise, working solutions quickly
+- Skip unnecessary documentation
+- Focus on getting the job done efficiently
+- Use standard patterns without over-engineering
 """
         return ModelConfig(
             mode="coder_fast",
@@ -59,9 +64,11 @@ class Default(BaseModelFamily):
 
     def explained(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Clear explanations
-- Step-by-step reasoning
-- Practical examples
+- Explain concepts clearly in accessible language
+- Use examples to illustrate abstract ideas
+- Break down complex problems into digestible parts
+- Provide context that helps understanding
+- Be patient and thorough in explanations
 """
         return ModelConfig(
             mode="explained",

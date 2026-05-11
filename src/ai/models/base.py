@@ -1,6 +1,6 @@
 """Base configuration and model family behavior for all Ollama models."""
 
-from .config import ModelConfig
+from ..config import ModelConfig
 
 
 def _build_config(

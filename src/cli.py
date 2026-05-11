@@ -7,9 +7,9 @@ model-specific configurations optimized for each model family.
 
 import sys
 
-import helpers
-import models
 import ai
+import helpers
+from ai.models import get_configs_for_model, detect_model_family
 
 
 def main() -> int:
@@ -29,8 +29,8 @@ def main() -> int:
         new_model_name = helpers.get_string_input("New tweaked model name: ")
 
         # get model family and configurations
-        model_configs = models.get_configs_for_model(selected_model, new_model_name)
-        model_family = models.detect_model_family(selected_model)
+        model_configs = get_configs_for_model(selected_model, new_model_name)
+        model_family = detect_model_family(selected_model)
         print(f"==> Model: {model_family}")
 
         selected_config_key = helpers.display_config_options(model_configs)

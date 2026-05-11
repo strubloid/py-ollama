@@ -1,17 +1,17 @@
-"""Gemma model configurations (2, 7b, etc)."""
+"""Llama model configurations (2, 2.7b, 3, etc)."""
 
-from .config import ModelConfig
+from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
 
 
-class Gemma(BaseModelFamily):
-    """Gemma model configurations."""
+class Llama(BaseModelFamily):
+    """Llama model configurations."""
 
-    family_name = "Gemma"
-    model_name = "Eggy"
+    family_name = "Llama"
+    model_name = "Muu"
 
     def model_profile(self) -> str:
-        return "Gemma is Google's compact but powerful model optimized for efficiency and instruction following."
+        return "Llama by Meta is a versatile open-source model with strong general reasoning capabilities."
 
     def _build_system(self, base_system: str, extension: str) -> str:
         if not extension:
@@ -20,9 +20,9 @@ class Gemma(BaseModelFamily):
 
     def normal(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Follow instructions precisely
-- Be concise but complete
-- Use structured responses when helpful
+- Be direct and practical in responses
+- Use Llama's strong reasoning to break down problems
+- Provide clear, actionable answers
 """
         return ModelConfig(
             mode="normal",
@@ -33,11 +33,11 @@ class Gemma(BaseModelFamily):
 
     def coder(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Write efficient, clean code
-- Use modern best practices
-- Prioritize readability
-- Apply proper error handling
-- Leverage Gemma's instruction-following strength
+- Write idiomatic code following best practices
+- Use modern language features and patterns
+- Prioritize correctness and efficiency
+- Apply proper error handling and edge cases
+- Write self-documenting code
 """
         return ModelConfig(
             mode="coder",
@@ -48,9 +48,9 @@ class Gemma(BaseModelFamily):
 
     def coder_fast(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Quick, working solutions
-- Minimal complexity
-- Focus on correctness
+- Provide quick, working solutions
+- Keep it simple and functional
+- Minimal explanation, maximum results
 """
         return ModelConfig(
             mode="coder_fast",
@@ -61,9 +61,10 @@ class Gemma(BaseModelFamily):
 
     def explained(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Clear, structured explanations
-- Step-by-step reasoning
-- Practical examples
+- Explain reasoning step by step
+- Connect concepts logically
+- Provide practical examples
+- Make complex ideas accessible
 """
         return ModelConfig(
             mode="explained",

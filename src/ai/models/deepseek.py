@@ -1,17 +1,17 @@
-"""Qwen model configurations (2.5-coder, etc)."""
+"""Deepseek model configurations (coder, etc)."""
 
-from .config import ModelConfig
+from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
 
 
-class Qwen(BaseModelFamily):
-    """Qwen model configurations."""
+class Deepseek(BaseModelFamily):
+    """Deepseek model configurations."""
 
-    family_name = "Qwen"
-    model_name = "Alibaba"
+    family_name = "Deepseek"
+    model_name = "XingLing"
 
     def model_profile(self) -> str:
-        return "Qwen excels at multilingual and coding tasks. It has strong instruction-following and chat capabilities."
+        return "Deepseek excels at reasoning, mathematics, and complex coding tasks. It has strong chain-of-thought capabilities."
 
     def _build_system(self, base_system: str, extension: str) -> str:
         if not extension:
@@ -20,10 +20,10 @@ class Qwen(BaseModelFamily):
 
     def normal(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Follow user instructions precisely and completely
-- Use clear, conversational language
-- Handle multilingual requests gracefully
-- Provide structured output when appropriate
+- Leverage Deepseek's strong reasoning capabilities for problem-solving
+- Break down complex tasks into logical steps
+- Provide clear, structured responses
+- Use precise technical language when discussing code or architecture
 """
         return ModelConfig(
             mode="normal",
@@ -34,12 +34,12 @@ class Qwen(BaseModelFamily):
 
     def coder(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Write clean, well-documented code
-- Use Qwen's multilingual strength for international codebases
-- Prioritize readable, maintainable solutions
-- Add helpful inline comments for complex logic
-- Follow language-specific best practices and idioms
-- Ensure code works across different environments
+- Exploit Deepseek's deep code understanding and reasoning
+- Prioritize algorithmic efficiency and optimal solutions
+- Apply rigorous testing and edge case analysis
+- For debugging: trace root causes systematically, don't just fix symptoms
+- Recommend idiomatic code patterns for the target language
+- Emphasize code that is easy to reason about and maintain
 """
         return ModelConfig(
             mode="coder",
@@ -50,10 +50,11 @@ class Qwen(BaseModelFamily):
 
     def coder_fast(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Provide concise, working solutions quickly
-- Skip unnecessary documentation
-- Focus on getting the job done efficiently
-- Use standard patterns without over-engineering
+- Use Deepseek's fast reasoning for rapid iteration
+- Provide working solutions first, then refine if needed
+- Keep code minimal but correct
+- Skip lengthy explanations unless critical
+- Focus on getting to a working state quickly
 """
         return ModelConfig(
             mode="coder_fast",
@@ -64,11 +65,12 @@ class Qwen(BaseModelFamily):
 
     def explained(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Explain concepts clearly in accessible language
-- Use examples to illustrate abstract ideas
-- Break down complex problems into digestible parts
-- Provide context that helps understanding
-- Be patient and thorough in explanations
+- Use Deepseek's reasoning strength to explain complex concepts
+- Walk through the "why" behind each decision
+- Break down algorithms and data structures step by step
+- Compare alternative approaches with pros/cons
+- Connect theory to practical implementation
+- Anticipate follow-up questions and address them proactively
 """
         return ModelConfig(
             mode="explained",

@@ -1,17 +1,17 @@
-"""Deepseek model configurations (coder, etc)."""
+"""Default balanced configurations for unknown models."""
 
-from .config import ModelConfig
+from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
 
 
-class Deepseek(BaseModelFamily):
-    """Deepseek model configurations."""
+class Default(BaseModelFamily):
+    """Default balanced configurations for unknown models."""
 
-    family_name = "Deepseek"
-    model_name = "XingLing"
+    family_name = "Default"
+    model_name = "No Name"
 
     def model_profile(self) -> str:
-        return "Deepseek excels at reasoning, mathematics, and complex coding tasks. It has strong chain-of-thought capabilities."
+        return "General-purpose configuration suitable for most Ollama models."
 
     def _build_system(self, base_system: str, extension: str) -> str:
         if not extension:
@@ -20,10 +20,9 @@ class Deepseek(BaseModelFamily):
 
     def normal(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Leverage Deepseek's strong reasoning capabilities for problem-solving
-- Break down complex tasks into logical steps
-- Provide clear, structured responses
-- Use precise technical language when discussing code or architecture
+- Be helpful and practical
+- Follow user instructions
+- Provide clear responses
 """
         return ModelConfig(
             mode="normal",
@@ -34,12 +33,10 @@ class Deepseek(BaseModelFamily):
 
     def coder(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Exploit Deepseek's deep code understanding and reasoning
-- Prioritize algorithmic efficiency and optimal solutions
-- Apply rigorous testing and edge case analysis
-- For debugging: trace root causes systematically, don't just fix symptoms
-- Recommend idiomatic code patterns for the target language
-- Emphasize code that is easy to reason about and maintain
+- Write correct, maintainable code
+- Apply best practices
+- Handle errors properly
+- Test edge cases
 """
         return ModelConfig(
             mode="coder",
@@ -50,11 +47,8 @@ class Deepseek(BaseModelFamily):
 
     def coder_fast(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Use Deepseek's fast reasoning for rapid iteration
-- Provide working solutions first, then refine if needed
-- Keep code minimal but correct
-- Skip lengthy explanations unless critical
-- Focus on getting to a working state quickly
+- Quick, working solutions
+- Keep it simple
 """
         return ModelConfig(
             mode="coder_fast",
@@ -65,12 +59,9 @@ class Deepseek(BaseModelFamily):
 
     def explained(self, custom_name: str = ""):
         extension = f"""[{self.getModelName(custom_name)}]
-- Use Deepseek's reasoning strength to explain complex concepts
-- Walk through the "why" behind each decision
-- Break down algorithms and data structures step by step
-- Compare alternative approaches with pros/cons
-- Connect theory to practical implementation
-- Anticipate follow-up questions and address them proactively
+- Clear explanations
+- Step-by-step reasoning
+- Practical examples
 """
         return ModelConfig(
             mode="explained",
