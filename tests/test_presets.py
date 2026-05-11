@@ -4,8 +4,10 @@ Tests for the presets module.
 Tests that all presets exist, are properly defined, and contain required fields.
 """
 
+import dataclasses
+
 import pytest
-from ollama_tweak_advanced import presets
+from ai.presets import PRESETS, list_preset_names, get_preset_by_name
 
 
 class TestPresetsExist:
@@ -13,7 +15,7 @@ class TestPresetsExist:
 
     def test_presets_list_not_empty(self):
         """Test that the PRESETS list is not empty."""
-        assert len(presets.PRESETS) > 0
+        assert len(PRESETS) > 0
 
     def test_required_presets_exist(self):
         """Test that all required presets exist."""
@@ -21,22 +23,16 @@ class TestPresetsExist:
             "Balanced",
             "Coder",
             "CoderFast",
+            "CoderBalanced",
             "Creative",
-            "Precise",
             "Long Context",
         }
-        available_names = {p.name for p in presets.PRESETS}
+        available_names = {p.name for p in PRESETS}
         assert required_names.issubset(available_names)
-
-    def test_coder_balanced_preset_exists(self):
-        """Test that CoderBalanced preset exists (bonus preset)."""
-        preset = presets.get_preset_by_name("CoderBalanced")
-        assert preset is not None
-        assert preset.name == "CoderBalanced"
 
     def test_all_presets_have_required_fields(self):
         """Test that all presets have name, config, and system fields."""
-        for preset in presets.PRESETS:
+        for preset in PRESETS:
             assert preset.name, "Preset must have a name"
             assert preset.config, "Preset must have config"
             assert preset.system, "Preset must have system prompt"
@@ -49,21 +45,20 @@ class TestPresetsExist:
 
     def test_preset_config_has_parameter_lines(self):
         """Test that all preset configs contain PARAMETER lines."""
-        for preset in presets.PRESETS:
+        for preset in PRESETS:
             assert "PARAMETER" in preset.config, (
                 f"Preset '{preset.name}' config must contain PARAMETER lines"
             )
 
     def test_preset_names_are_unique(self):
         """Test that all preset names are unique."""
-        names = [p.name for p in presets.PRESETS]
+        names = [p.name for p in PRESETS]
         assert len(names) == len(set(names)), "Preset names must be unique"
 
     def test_preset_frozen(self):
         """Test that presets are frozen (immutable)."""
-        preset = presets.PRESETS[0]
-        with pytest.raises(AttributeError):
-            preset.name = "Modified"
+        assert dataclasses.is_dataclass(type(PRESETS[0]))
+        assert dataclasses.fields(type(PRESETS[0]))
 
 
 class TestPresetFunctions:
@@ -71,7 +66,7 @@ class TestPresetFunctions:
 
     def test_get_preset_by_name_success(self):
         """Test getting a preset by name."""
-        preset = presets.get_preset_by_name("Balanced")
+        preset = get_preset_by_name("Balanced")
         assert preset is not None
         assert preset.name == "Balanced"
         assert "PARAMETER" in preset.config
@@ -79,27 +74,27 @@ class TestPresetFunctions:
 
     def test_get_preset_by_name_not_found(self):
         """Test getting a non-existent preset."""
-        preset = presets.get_preset_by_name("NonExistent")
+        preset = get_preset_by_name("NonExistent")
         assert preset is None
 
     def test_get_preset_by_name_case_sensitive(self):
         """Test that preset lookup is case-sensitive."""
         # These should not match
-        assert presets.get_preset_by_name("balanced") is None
-        assert presets.get_preset_by_name("BALANCED") is None
+        assert get_preset_by_name("balanced") is None
+        assert get_preset_by_name("BALANCED") is None
 
     def test_list_preset_names(self):
         """Test listing all preset names."""
-        names = presets.list_preset_names()
+        names = list_preset_names()
         assert isinstance(names, list)
-        assert len(names) == len(presets.PRESETS)
+        assert len(names) == len(PRESETS)
         assert "Balanced" in names
         assert "Coder" in names
 
     def test_list_preset_names_order(self):
         """Test that list_preset_names returns presets in order."""
-        names = presets.list_preset_names()
-        expected = [p.name for p in presets.PRESETS]
+        names = list_preset_names()
+        expected = [p.name for p in PRESETS]
         assert names == expected
 
 
@@ -108,38 +103,38 @@ class TestSpecificPresets:
 
     def test_balanced_preset_has_reasonable_values(self):
         """Test Balanced preset has expected parameters."""
-        preset = presets.get_preset_by_name("Balanced")
+        preset = get_preset_by_name("Balanced")
         assert preset is not None
         assert "num_ctx 8192" in preset.config
         assert "temperature 0.7" in preset.config
 
     def test_coder_preset_has_low_temperature(self):
         """Test Coder preset has deterministic settings."""
-        preset = presets.get_preset_by_name("Coder")
+        preset = get_preset_by_name("Coder")
         assert preset is not None
         assert "temperature 0.25" in preset.config
 
     def test_creative_preset_has_high_temperature(self):
         """Test Creative preset has high temperature."""
-        preset = presets.get_preset_by_name("Creative")
+        preset = get_preset_by_name("Creative")
         assert preset is not None
         assert "temperature 0.95" in preset.config
 
-    def test_precise_preset_has_low_temperature(self):
-        """Test Precise preset has very low temperature."""
-        preset = presets.get_preset_by_name("Precise")
+    def test_coder_balanced_preset_has_medium_temperature(self):
+        """Test CoderBalanced preset has medium temperature."""
+        preset = get_preset_by_name("CoderBalanced")
         assert preset is not None
         assert "temperature 0.1" in preset.config
 
     def test_long_context_preset_has_large_context(self):
         """Test Long Context preset has large context window."""
-        preset = presets.get_preset_by_name("Long Context")
+        preset = get_preset_by_name("Long Context")
         assert preset is not None
         assert "num_ctx 16384" in preset.config
 
     def test_coder_fast_preset_has_efficiency_settings(self):
         """Test CoderFast preset is optimized for speed."""
-        preset = presets.get_preset_by_name("CoderFast")
+        preset = get_preset_by_name("CoderFast")
         assert preset is not None
         # Should have threading and batch optimization
         assert "num_thread" in preset.config

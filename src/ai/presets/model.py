@@ -29,3 +29,11 @@ PRESETS: list[OllamaPreset] = [
 
 def list_preset_names() -> list[str]:
     return [preset.name for preset in PRESETS]
+
+
+def get_preset_by_name(name: str) -> OllamaPreset | None:
+    """Get a preset by name."""
+    for preset in PRESETS:
+        if preset.name == name:
+            return preset
+    return None

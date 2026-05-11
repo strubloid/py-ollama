@@ -134,4 +134,4 @@ mypy src/             # Type check
 
 ### Test Status
 
-Tests in `tests/` need updating to work with the new package structure.
+All tests passing (25 tests). Run `pytest tests/` to verify.

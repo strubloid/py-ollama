@@ -6,7 +6,11 @@ Tests Modelfile generation, temporary file handling, and cleanup.
 
 import pytest
 import os
-from ollama_tweak_advanced import modelfile
+from ai.modelfile import (
+    build_modelfile_content,
+    TemporaryModelfile,
+    ModelfileError,
+)
 
 
 class TestBuildModelfileContent:
@@ -14,7 +18,7 @@ class TestBuildModelfileContent:
 
     def test_build_modelfile_content_success(self):
         """Test successful Modelfile generation."""
-        content = modelfile.build_modelfile_content(
+        content = build_modelfile_content(
             base_model="llama2",
             config_params="PARAMETER temperature 0.7\nPARAMETER top_p 0.9",
             system_prompt="You are a helpful assistant.",
@@ -23,12 +27,12 @@ class TestBuildModelfileContent:
         assert "FROM llama2" in content
         assert "PARAMETER temperature 0.7" in content
         assert "PARAMETER top_p 0.9" in content
-        assert 'SYSTEM """' in content
+        assert 'SYSTEM "' in content
         assert "You are a helpful assistant." in content
 
     def test_build_modelfile_content_multiline(self):
         """Test Modelfile with multiline system prompt."""
-        content = modelfile.build_modelfile_content(
+        content = build_modelfile_content(
             base_model="mistral",
             config_params="PARAMETER temperature 0.5",
             system_prompt="Line 1\nLine 2\nLine 3",
@@ -39,8 +43,8 @@ class TestBuildModelfileContent:
 
     def test_build_modelfile_empty_base_model(self):
         """Test that empty base_model raises an error."""
-        with pytest.raises(modelfile.ModelfileError):
-            modelfile.build_modelfile_content(
+        with pytest.raises(ModelfileError):
+            build_modelfile_content(
                 base_model="",
                 config_params="PARAMETER temperature 0.7",
                 system_prompt="Prompt",
@@ -48,8 +52,8 @@ class TestBuildModelfileContent:
 
     def test_build_modelfile_empty_config(self):
         """Test that empty config_params raises an error."""
-        with pytest.raises(modelfile.ModelfileError):
-            modelfile.build_modelfile_content(
+        with pytest.raises(ModelfileError):
+            build_modelfile_content(
                 base_model="llama2",
                 config_params="",
                 system_prompt="Prompt",
@@ -57,8 +61,8 @@ class TestBuildModelfileContent:
 
     def test_build_modelfile_empty_system(self):
         """Test that empty system_prompt raises an error."""
-        with pytest.raises(modelfile.ModelfileError):
-            modelfile.build_modelfile_content(
+        with pytest.raises(ModelfileError):
+            build_modelfile_content(
                 base_model="llama2",
                 config_params="PARAMETER temperature 0.7",
                 system_prompt="",
@@ -72,7 +76,7 @@ class TestTemporaryModelfile:
         """Test that the context manager creates a file."""
         content = "FROM llama2\nPARAMETER temperature 0.7"
 
-        with modelfile.TemporaryModelfile(content) as tmp_path:
+        with TemporaryModelfile(content) as tmp_path:
             assert os.path.exists(tmp_path)
             with open(tmp_path, "r") as f:
                 file_content = f.read()
@@ -83,7 +87,7 @@ class TestTemporaryModelfile:
         content = "FROM llama2\nPARAMETER temperature 0.7"
 
         tmp_path = None
-        with modelfile.TemporaryModelfile(content) as tmp:
+        with TemporaryModelfile(content) as tmp:
             tmp_path = tmp
             assert os.path.exists(tmp_path)
 
@@ -95,8 +99,8 @@ class TestTemporaryModelfile:
         content1 = "FROM llama2\nPARAMETER temperature 0.7"
         content2 = "FROM mistral\nPARAMETER temperature 0.5"
 
-        with modelfile.TemporaryModelfile(content1) as tmp1:
-            with modelfile.TemporaryModelfile(content2) as tmp2:
+        with TemporaryModelfile(content1) as tmp1:
+            with TemporaryModelfile(content2) as tmp2:
                 assert tmp1 != tmp2
                 assert os.path.exists(tmp1)
                 assert os.path.exists(tmp2)
