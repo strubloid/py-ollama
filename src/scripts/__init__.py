@@ -6,15 +6,21 @@ import re
 
 """Run the speed test for py-ollama model response times."""
 def speed():
-    
+    """Run all speed tests for py-ollama model response times."""
     project_root = Path(__file__).parent.parent.parent
     tests_path = project_root / "tests"
 
     import subprocess
+
+    print("=" * 60)
+    print("Running ALL speed tests")
+    print("=" * 60)
+
     result = subprocess.run(
         [sys.executable, str(tests_path / "test_create_machine.py")],
         cwd=str(project_root),
     )
+
     sys.exit(result.returncode)
 
 """Recursively generate tree structure."""

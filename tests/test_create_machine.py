@@ -5,23 +5,29 @@ import subprocess
 import time
 from pathlib import Path
 
-
 CONFIG_FILE = Path(__file__).parent.parent / "speed.config.json"
 TEST_MODEL = "qwen2.5-coder:14b"
-TEST_PROMPT = "What is your name?"
 CREATED_MODELS = []
 
-"""Load config from file."""
+
 def load_config() -> dict:
-    
     if not CONFIG_FILE.exists():
         raise FileNotFoundError(f"Config file not found: {CONFIG_FILE}")
 
     with open(CONFIG_FILE) as f:
         return json.load(f)
 
-"""Run ollama prompt and return response time in seconds."""
-def run_ollama_prompt(model_name: str, prompt: str, max_time: float) -> float:
+
+def run_ollama_prompt(model_name: str, prompt: str, max_time: float, warmup: bool = False) -> tuple[float, str]:
+    if warmup:
+        subprocess.run(
+            ["ollama", "run", model_name, prompt],
+            capture_output=True,
+            text=True,
+            timeout=max_time + 5,
+        )
+        return 0.0, ""
+
     start_time = time.time()
 
     result = subprocess.run(
@@ -36,11 +42,10 @@ def run_ollama_prompt(model_name: str, prompt: str, max_time: float) -> float:
     if result.returncode != 0:
         raise RuntimeError(f"Ollama failed: {result.stderr}")
 
-    return elapsed
+    return elapsed, result.stdout.strip()
 
-"""Create a model using py-ollama."""
+
 def create_model(model_name: str, config_num: str) -> None:
-    
     result = subprocess.run(
         ["py-ollama", TEST_MODEL, model_name, config_num],
         capture_output=True,
@@ -53,9 +58,8 @@ def create_model(model_name: str, config_num: str) -> None:
 
     CREATED_MODELS.append(model_name)
 
-"""Remove all created test models."""
+
 def cleanup_models() -> None:
-    
     for model in CREATED_MODELS:
         try:
             subprocess.run(
@@ -67,19 +71,15 @@ def cleanup_models() -> None:
         except Exception as e:
             print(f"  Failed to clean up {model}: {e}")
 
-"""Test that each config can create a model and respond within time limit."""
-def test_model_response_time() -> None:
-    config = load_config()
-    default_max = config.get("max_request_time_seconds", 10)
-    config_limits = config.get("config_limits", {})
 
-    print("=" * 60)
-    print("Model Response Time Test")
-    print("=" * 60)
-    print(f"Model: {TEST_MODEL}")
-    print(f"Default max time: {default_max}s")
-    print(f"Config-specific limits: {config_limits}")
-    print(f"Prompt: {TEST_PROMPT}")
+def run_test(prompt: str, prefix: str, request_type: str) -> None:
+    
+    config = load_config()
+    config_limits = config.get("config_limits", {}).get(request_type, {})
+
+    print(f"Prompt: {prompt}")
+    print(f"Request type: {request_type}")
+    print(f"Limits: {config_limits}")
     print("=" * 60)
 
     configs = [
@@ -93,16 +93,19 @@ def test_model_response_time() -> None:
 
     try:
         for config_num, config_key, config_name in configs:
-            model_name = f"rafael_{config_num}"
-            max_time = config_limits.get(config_key, default_max)
+            model_name = f"{prefix}_{config_num}"
+            max_time = config_limits.get(config_key, 5)
 
             print(f"\n--- Testing {config_name} ({config_num}) ---")
 
             create_model(model_name, config_num)
             print(f"Created: {model_name}")
 
+            print("  Warming up...")
+            run_ollama_prompt(model_name, "hi", max_time, warmup=True)
+
             try:
-                elapsed = run_ollama_prompt(model_name, TEST_PROMPT, max_time)
+                elapsed, response = run_ollama_prompt(model_name, prompt, max_time)
                 passed = elapsed <= max_time
 
                 results.append({
@@ -111,9 +114,11 @@ def test_model_response_time() -> None:
                     "elapsed": elapsed,
                     "max": max_time,
                     "passed": passed,
+                    "response": response[:50] + "..." if len(response) > 50 else response,
                 })
 
                 status = "PASS" if passed else "FAIL"
+                print(f"Response: {results[-1]['response']}")
                 print(f"Response time: {elapsed:.2f}s / {max_time}s - {status}")
 
             except subprocess.TimeoutExpired:
@@ -124,7 +129,9 @@ def test_model_response_time() -> None:
                     "elapsed": elapsed,
                     "max": max_time,
                     "passed": False,
+                    "response": "TIMEOUT",
                 })
+                print("Response: TIMEOUT")
                 print("Response time: TIMEOUT - FAIL")
 
     finally:
@@ -151,7 +158,19 @@ def test_model_response_time() -> None:
         failed_names = ", ".join(r["model"] for r in failed)
         raise AssertionError(f"Failed models: {failed_names}")
 
-    print("All tests passed!")
+    print("Test passed!\n")
+
+
+def test_model_response_time() -> None:
+    
+    print("Model Response Time Tests")
+    print(f"Model: {TEST_MODEL}")
+
+    run_test("What is your name?", "rafael", "quick_request")
+    run_test("What are your principles?", "principles", "normal_request")
+
+    print("ALL TESTS PASSED!")
+    print("=" * 60)
 
 
 if __name__ == "__main__":
