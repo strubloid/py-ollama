@@ -1,11 +1,25 @@
 """Scripts for py-ollama project."""
 
+import sys
 from pathlib import Path
 import re
 
+"""Run the speed test for py-ollama model response times."""
+def speed():
+    
+    project_root = Path(__file__).parent.parent.parent
+    tests_path = project_root / "tests"
 
+    import subprocess
+    result = subprocess.run(
+        [sys.executable, str(tests_path / "test_create_machine.py")],
+        cwd=str(project_root),
+    )
+    sys.exit(result.returncode)
+
+"""Recursively generate tree structure."""
 def generate_tree(dir_path: Path, prefix: str = "") -> list[str]:
-    """Recursively generate tree structure."""
+    
     lines = []
     
     entries = sorted(
@@ -25,9 +39,9 @@ def generate_tree(dir_path: Path, prefix: str = "") -> list[str]:
     
     return lines
 
-
+"""Generate and print directory tree."""
 def main():
-    """Generate and print directory tree."""
+    
     project_root = Path(__file__).parent.parent
     src_path = project_root
     
@@ -35,9 +49,9 @@ def main():
     lines.extend(generate_tree(src_path))
     print("\n".join(lines))
 
-
+"""Generate tree and update AGENTS.md with current directory structure."""
 def refresh():
-    """Generate tree and update AGENTS.md with current directory structure."""
+    
     project_root = Path(__file__).parent.parent
     src_path = project_root
     agents_file = project_root.parent / "AGENTS.md"
