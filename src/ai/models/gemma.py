@@ -2,6 +2,7 @@
 
 from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
+from .extensions.gemma_extension import GemmaExtension
 
 
 class Gemma(BaseModelFamily):
@@ -19,11 +20,7 @@ class Gemma(BaseModelFamily):
         return f"{base_system}\n\n---\n\n{extension}"
 
     def normal(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Follow instructions precisely
-- Be concise but complete
-- Use structured responses when helpful
-"""
+        extension = GemmaExtension.get_normal(custom_name)
         return ModelConfig(
             mode="normal",
             name="Normal (Recommended)",
@@ -32,13 +29,7 @@ class Gemma(BaseModelFamily):
         )
 
     def coder(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Write efficient, clean code
-- Use modern best practices
-- Prioritize readability
-- Apply proper error handling
-- Leverage Gemma's instruction-following strength
-"""
+        extension = GemmaExtension.get_coder(custom_name)
         return ModelConfig(
             mode="coder",
             name="Coder",
@@ -47,11 +38,7 @@ class Gemma(BaseModelFamily):
         )
 
     def coder_fast(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Quick, working solutions
-- Minimal complexity
-- Focus on correctness
-"""
+        extension = GemmaExtension.get_coder_fast(custom_name)
         return ModelConfig(
             mode="coder_fast",
             name="Coder Fast",
@@ -60,11 +47,7 @@ class Gemma(BaseModelFamily):
         )
 
     def explained(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Clear, structured explanations
-- Step-by-step reasoning
-- Practical examples
-"""
+        extension = GemmaExtension.get_explained(custom_name)
         return ModelConfig(
             mode="explained",
             name="Explained",

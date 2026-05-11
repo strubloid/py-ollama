@@ -2,6 +2,7 @@
 
 from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
+from .extensions.llama_extension import LlamaExtension
 
 
 class Llama(BaseModelFamily):
@@ -19,11 +20,7 @@ class Llama(BaseModelFamily):
         return f"{base_system}\n\n---\n\n{extension}"
 
     def normal(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Be direct and practical in responses
-- Use Llama's strong reasoning to break down problems
-- Provide clear, actionable answers
-"""
+        extension = LlamaExtension.get_normal(custom_name)
         return ModelConfig(
             mode="normal",
             name="Normal (Recommended)",
@@ -32,13 +29,7 @@ class Llama(BaseModelFamily):
         )
 
     def coder(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Write idiomatic code following best practices
-- Use modern language features and patterns
-- Prioritize correctness and efficiency
-- Apply proper error handling and edge cases
-- Write self-documenting code
-"""
+        extension = LlamaExtension.get_coder(custom_name)
         return ModelConfig(
             mode="coder",
             name="Coder",
@@ -47,11 +38,7 @@ class Llama(BaseModelFamily):
         )
 
     def coder_fast(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Provide quick, working solutions
-- Keep it simple and functional
-- Minimal explanation, maximum results
-"""
+        extension = LlamaExtension.get_coder_fast(custom_name)
         return ModelConfig(
             mode="coder_fast",
             name="Coder Fast",
@@ -60,12 +47,7 @@ class Llama(BaseModelFamily):
         )
 
     def explained(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Explain reasoning step by step
-- Connect concepts logically
-- Provide practical examples
-- Make complex ideas accessible
-"""
+        extension = LlamaExtension.get_explained(custom_name)
         return ModelConfig(
             mode="explained",
             name="Explained",

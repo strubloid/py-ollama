@@ -2,6 +2,7 @@
 
 from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
+from .extensions.deepseek_extension import DeepseekExtension
 
 
 class Deepseek(BaseModelFamily):
@@ -19,12 +20,7 @@ class Deepseek(BaseModelFamily):
         return f"{base_system}\n\n---\n\n{extension}"
 
     def normal(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Leverage Deepseek's strong reasoning capabilities for problem-solving
-- Break down complex tasks into logical steps
-- Provide clear, structured responses
-- Use precise technical language when discussing code or architecture
-"""
+        extension = DeepseekExtension.get_normal(custom_name)
         return ModelConfig(
             mode="normal",
             name="Normal (Recommended)",
@@ -33,14 +29,7 @@ class Deepseek(BaseModelFamily):
         )
 
     def coder(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Exploit Deepseek's deep code understanding and reasoning
-- Prioritize algorithmic efficiency and optimal solutions
-- Apply rigorous testing and edge case analysis
-- For debugging: trace root causes systematically, don't just fix symptoms
-- Recommend idiomatic code patterns for the target language
-- Emphasize code that is easy to reason about and maintain
-"""
+        extension = DeepseekExtension.get_coder(custom_name)
         return ModelConfig(
             mode="coder",
             name="Coder",
@@ -49,13 +38,7 @@ class Deepseek(BaseModelFamily):
         )
 
     def coder_fast(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Use Deepseek's fast reasoning for rapid iteration
-- Provide working solutions first, then refine if needed
-- Keep code minimal but correct
-- Skip lengthy explanations unless critical
-- Focus on getting to a working state quickly
-"""
+        extension = DeepseekExtension.get_coder_fast(custom_name)
         return ModelConfig(
             mode="coder_fast",
             name="Coder Fast",
@@ -64,14 +47,7 @@ class Deepseek(BaseModelFamily):
         )
 
     def explained(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Use Deepseek's reasoning strength to explain complex concepts
-- Walk through the "why" behind each decision
-- Break down algorithms and data structures step by step
-- Compare alternative approaches with pros/cons
-- Connect theory to practical implementation
-- Anticipate follow-up questions and address them proactively
-"""
+        extension = DeepseekExtension.get_explained(custom_name)
         return ModelConfig(
             mode="explained",
             name="Explained",

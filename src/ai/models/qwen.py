@@ -2,6 +2,7 @@
 
 from ..config import ModelConfig
 from .base import BaseModelFamily, NORMAL_CONFIG, NORMAL_SYSTEM, CODER_CONFIG, CODER_SYSTEM, CODER_FAST_CONFIG, CODER_FAST_SYSTEM, EXPLAINED_CONFIG, EXPLAINED_SYSTEM
+from .extensions.qwen_extension import QwenExtension
 
 
 class Qwen(BaseModelFamily):
@@ -19,12 +20,7 @@ class Qwen(BaseModelFamily):
         return f"{base_system}\n\n---\n\n{extension}"
 
     def normal(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Follow user instructions precisely and completely
-- Use clear, conversational language
-- Handle multilingual requests gracefully
-- Provide structured output when appropriate
-"""
+        extension = QwenExtension.get_normal(custom_name)
         return ModelConfig(
             mode="normal",
             name="Normal (Recommended)",
@@ -33,14 +29,7 @@ class Qwen(BaseModelFamily):
         )
 
     def coder(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Write clean, well-documented code
-- Use Qwen's multilingual strength for international codebases
-- Prioritize readable, maintainable solutions
-- Add helpful inline comments for complex logic
-- Follow language-specific best practices and idioms
-- Ensure code works across different environments
-"""
+        extension = QwenExtension.get_coder(custom_name)
         return ModelConfig(
             mode="coder",
             name="Coder",
@@ -49,12 +38,7 @@ class Qwen(BaseModelFamily):
         )
 
     def coder_fast(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Provide concise, working solutions quickly
-- Skip unnecessary documentation
-- Focus on getting the job done efficiently
-- Use standard patterns without over-engineering
-"""
+        extension = QwenExtension.get_coder_fast(custom_name)
         return ModelConfig(
             mode="coder_fast",
             name="Coder Fast",
@@ -63,13 +47,7 @@ class Qwen(BaseModelFamily):
         )
 
     def explained(self, custom_name: str = ""):
-        extension = f"""[{self.getModelName(custom_name)}]
-- Explain concepts clearly in accessible language
-- Use examples to illustrate abstract ideas
-- Break down complex problems into digestible parts
-- Provide context that helps understanding
-- Be patient and thorough in explanations
-"""
+        extension = QwenExtension.get_explained(custom_name)
         return ModelConfig(
             mode="explained",
             name="Explained",
