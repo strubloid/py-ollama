@@ -29,6 +29,7 @@ py-ollama = "cli:main"
 py-ollama-refresh = "scripts:refresh_agents"
 py-ollama-speed = "scripts:run_speed_tests"
 py-ollama-generate = "scripts:run_generate_configs"
+py-ollama-bench = "scripts:run_bench"
 
 [project.optional-dependencies]
 dev = [
