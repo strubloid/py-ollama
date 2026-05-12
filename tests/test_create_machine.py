@@ -10,7 +10,7 @@ from rich.table import Table
 
 CONFIG_FILE = Path(__file__).parent.parent / "speed.config.json"
 TEST_MODEL = "qwen2.5-coder:14b"
-WARMUP_PROMPT = "ok"
+WARMUP_PROMPT = "hi"
 CREATED_MODELS: list[str] = []
 
 CONFIGS = [
@@ -61,10 +61,19 @@ def create_model(model_name: str, config_num: str) -> None:
     CREATED_MODELS.append(model_name)
 
 
+def verify_num_gpu(model_name: str) -> bool:
+    result = subprocess.run(
+        ["ollama", "show", "--modelfile", model_name],
+        capture_output=True,
+        text=True,
+    )
+    return "num_gpu" in result.stdout.lower()
+
+
 def warmup_model(model_name: str) -> float:
     start = time.time()
     subprocess.run(
-        ["ollama", "run", model_name, "hi"],
+        ["ollama", "run", model_name, WARMUP_PROMPT],
         capture_output=True,
         text=True,
         timeout=30,
@@ -114,6 +123,7 @@ def run_benchmark(
     table = Table(title=f"{prompt}")
     table.add_column("Config", style="cyan", no_wrap=True)
     table.add_column("Model", style="magenta")
+    table.add_column("GPU", justify="center", style="dim")
     table.add_column("Warmup", justify="right", style="yellow")
     table.add_column("Response", style="green")
     table.add_column("Time", justify="right", style="blue")
@@ -124,6 +134,7 @@ def run_benchmark(
         model_name = f"{prefix}_{config_num}"
         max_time = config_limits.get(config_key, 5)
         warmup = model_warmup_times.get(model_name, 0.0)
+        has_gpu = "[green]Y[/green]" if verify_num_gpu(model_name) else "[dim]-[/dim]"
 
         try:
             elapsed, response = run_prompt(model_name, prompt, max_time + 5)
@@ -149,6 +160,7 @@ def run_benchmark(
         table.add_row(
             config_name,
             model_name,
+            has_gpu,
             f"{warmup:.2f}s",
             short_resp,
             time_str,

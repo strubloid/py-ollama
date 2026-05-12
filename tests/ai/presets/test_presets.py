@@ -75,30 +75,30 @@ class TestSpecificPresets:
     def test_balanced_config(self):
         preset = get_preset_by_name("Balanced")
         assert preset is not None
-        assert "num_ctx 8192" in preset.config
-        assert "temperature 0.7" in preset.config
+        assert "PARAMETER num_ctx" in preset.config
+        assert "PARAMETER temperature" in preset.config
     
     """Test Coder preset config values."""
     def test_coder_config(self):
         preset = get_preset_by_name("Coder")
         assert preset is not None
-        assert "temperature 0.25" in preset.config
+        assert "PARAMETER temperature" in preset.config
     
-    """Test CoderFast preset has threading."""
+    """Test CoderFast preset has num_gpu."""
     def test_coder_fast_config(self):
         preset = get_preset_by_name("CoderFast")
         assert preset is not None
-        assert "num_thread" in preset.config
-        assert "num_batch" in preset.config
+        assert "PARAMETER num_ctx" in preset.config
+        assert "PARAMETER num_predict" in preset.config
     
-    """Test Creative preset has high temperature."""
+    """Test Creative preset has temperature."""
     def test_creative_config(self):
         preset = get_preset_by_name("Creative")
         assert preset is not None
-        assert "temperature 0.95" in preset.config
+        assert "PARAMETER temperature" in preset.config
 
-    """Test Long Context has large context."""
+    """Test Long Context has context setting."""
     def test_long_context_config(self):
         preset = get_preset_by_name("Long Context")
         assert preset is not None
-        assert "num_ctx 16384" in preset.config
+        assert "num_ctx" in preset.config

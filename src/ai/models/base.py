@@ -11,10 +11,12 @@ def _build_config(
     repeat_last_n: int,
     seed: int,
     stop: list,
+    num_gpu: int = 0,
 ) -> str:
     lines = [
         f"PARAMETER num_ctx {num_ctx}",
         f"PARAMETER num_predict {num_predict}",
+        f"PARAMETER num_gpu {num_gpu}",
         f"PARAMETER temperature {temperature}",
         f"PARAMETER top_p {top_p}",
         f"PARAMETER top_k {top_k}",
@@ -28,51 +30,55 @@ def _build_config(
 
 
 NORMAL_CONFIG = _build_config(
-    num_ctx=1024,
-    num_predict=96,
-    temperature=0.15,
-    top_p=0.75,
-    top_k=15,
-    repeat_penalty=1.1,
-    repeat_last_n=48,
-    seed=-1,
+    num_ctx=256,
+    num_predict=4,
+    temperature=0.0,
+    top_p=1.0,
+    top_k=1,
+    repeat_penalty=1.0,
+    repeat_last_n=0,
+    seed=42,
     stop=[],
+    num_gpu=128,
 )
 
 CODER_CONFIG = _build_config(
     num_ctx=1024,
-    num_predict=96,
-    temperature=0.15,
-    top_p=0.75,
-    top_k=15,
-    repeat_penalty=1.1,
-    repeat_last_n=48,
-    seed=-1,
+    num_predict=24,
+    temperature=0.0,
+    top_p=1.0,
+    top_k=1,
+    repeat_penalty=1.0,
+    repeat_last_n=0,
+    seed=42,
     stop=[],
+    num_gpu=128,
 )
 
 CODER_FAST_CONFIG = _build_config(
-    num_ctx=512,
-    num_predict=64,
-    temperature=0.1,
-    top_p=0.7,
-    top_k=10,
-    repeat_penalty=1.1,
-    repeat_last_n=32,
+    num_ctx=128,
+    num_predict=8,
+    temperature=0.9,
+    top_p=0.99,
+    top_k=1,
+    repeat_penalty=1.5,
+    repeat_last_n=2,
     seed=-1,
     stop=[],
+    num_gpu=128,
 )
 
 EXPLAINED_CONFIG = _build_config(
-    num_ctx=1024,
-    num_predict=128,
-    temperature=0.2,
-    top_p=0.8,
-    top_k=20,
-    repeat_penalty=1.1,
-    repeat_last_n=64,
-    seed=-1,
+    num_ctx=512,
+    num_predict=16,
+    temperature=0.1,
+    top_p=0.9,
+    top_k=5,
+    repeat_penalty=1.0,
+    repeat_last_n=0,
+    seed=42,
     stop=[],
+    num_gpu=128,
 )
 
 NORMAL_SYSTEM = """You are an autonomous general-purpose AI agent.
@@ -95,8 +101,8 @@ Success means: task complete, validated, and verified."""
 
 
 CODER_CONFIG = _build_config(
-    num_ctx=1536,
-    num_predict=128,
+    num_ctx=1024,
+    num_predict=48,
     temperature=0.15,
     top_p=0.8,
     top_k=20,
@@ -104,6 +110,7 @@ CODER_CONFIG = _build_config(
     repeat_last_n=96,
     seed=-1,
     stop=[],
+    num_gpu=128,
 )
 
 CODER_SYSTEM = """Expert coding agent. Core: correct, efficient, production-ready code.
@@ -115,23 +122,24 @@ Report what changed. Never claim success unless working."""
 
 
 CODER_FAST_CONFIG = _build_config(
-    num_ctx=1024,
-    num_predict=96,
-    temperature=0.1,
-    top_p=0.75,
-    top_k=10,
-    repeat_penalty=1.05,
-    repeat_last_n=64,
-    seed=-1,
+    num_ctx=256,
+    num_predict=4,
+    temperature=0.0,
+    top_p=1.0,
+    top_k=1,
+    repeat_penalty=1.0,
+    repeat_last_n=0,
+    seed=42,
     stop=[],
+    num_gpu=128,
 )
 
 CODER_FAST_SYSTEM = """Quick coding assistant. Correctness first. Minimal changes. No invented APIs. Provide working code only."""
 
 
 EXPLAINED_CONFIG = _build_config(
-    num_ctx=1536,
-    num_predict=192,
+    num_ctx=512,
+    num_predict=32,
     temperature=0.2,
     top_p=0.85,
     top_k=30,
@@ -139,6 +147,7 @@ EXPLAINED_CONFIG = _build_config(
     repeat_last_n=128,
     seed=-1,
     stop=[],
+    num_gpu=128,
 )
 
 EXPLAINED_SYSTEM = """Coding teacher. For each task:
