@@ -7,12 +7,12 @@ from dataclasses import dataclass
 class BalancedPreset:
     name: str = "Balanced"
     config: str = """PARAMETER num_ctx 1024
-PARAMETER num_predict 64
-PARAMETER temperature 0.1
-PARAMETER top_p 0.7
-PARAMETER top_k 10
-PARAMETER repeat_penalty 1.15
-PARAMETER repeat_last_n 32
+PARAMETER num_predict 96
+PARAMETER temperature 0.15
+PARAMETER top_p 0.75
+PARAMETER top_k 15
+PARAMETER repeat_penalty 1.1
+PARAMETER repeat_last_n 48
 PARAMETER seed -1
 PARAMETER stop []"""
     system: str = """You are an autonomous general-purpose AI agent.

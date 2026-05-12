@@ -7,12 +7,12 @@ from dataclasses import dataclass
 class LongContextPreset:
     name: str = "Long Context"
     config: str = """PARAMETER num_ctx 1024
-PARAMETER num_predict 96
-PARAMETER temperature 0.15
-PARAMETER top_p 0.75
-PARAMETER top_k 15
-PARAMETER repeat_penalty 1.15
-PARAMETER repeat_last_n 48
+PARAMETER num_predict 128
+PARAMETER temperature 0.2
+PARAMETER top_p 0.8
+PARAMETER top_k 20
+PARAMETER repeat_penalty 1.1
+PARAMETER repeat_last_n 64
 PARAMETER seed -1
 PARAMETER stop []"""
     system: str = """Coding teacher. For each task:

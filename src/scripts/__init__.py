@@ -12,10 +12,6 @@ def speed():
 
     import subprocess
 
-    print("=" * 60)
-    print("Running ALL speed tests")
-    print("=" * 60)
-
     result = subprocess.run(
         [sys.executable, str(tests_path / "test_create_machine.py")],
         cwd=str(project_root),

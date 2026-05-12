@@ -1,16 +1,16 @@
 {
     "config_limits": {
         "quick_request": {
-            "normal": 4,
-            "coder": 4,
-            "coder_fast": 3,
-            "explained": 4
+            "normal": 3,
+            "coder": 3,
+            "coder_fast": 2,
+            "explained": 3
         },
         "normal_request": {
             "normal": 2,
-            "coder": 7,
-            "coder_fast": 5,
-            "explained": 6
+            "coder": 6,
+            "coder_fast": 4,
+            "explained": 5
         }
     }
 }
