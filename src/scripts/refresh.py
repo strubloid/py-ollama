@@ -16,10 +16,19 @@ def refresh_agents():
 
     content = agents_file.read_text()
 
-    pattern = r'(### Directory Structure\n+\nRun `py-ollama-refresh` to update this structure\.\n+\n)```\nsrc/\n.*?\n```'
-    replacement = r'\1' + new_tree
+    header_pattern = r'### Directory Structure\n\nRun `py-ollama-refresh` to update this structure\.\n\n'
+    tree_pattern = r'```\nsrc/\n.*?```'
 
-    content = re.sub(pattern, replacement, content, flags=re.DOTALL)
+    has_header = bool(re.search(header_pattern, content))
+    tree_match = re.search(tree_pattern, content, flags=re.DOTALL)
 
-    agents_file.write_text(content)
-    print("AGENTS.md updated successfully!")
+    if has_header and tree_match:
+        current_tree = tree_match.group()
+        if current_tree != new_tree:
+            new_content = content.replace(current_tree, new_tree, 1)
+            agents_file.write_text(new_content)
+            print("AGENTS.md updated successfully!")
+        else:
+            print("AGENTS.md already up to date.")
+    else:
+        print("Warning: AGENTS.md is missing Directory Structure section. Skipping update.")

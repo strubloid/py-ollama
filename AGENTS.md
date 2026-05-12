@@ -158,6 +158,7 @@ ruff check src/ tests/  # Lint
 ## Performance Optimization (2026-05-12)
 
 ### Hardware Profile
+
 - **GPU:** NVIDIA RTX 4070 Ti (12GB VRAM)
 - **Memory Bandwidth:** 504 GB/s
 - **Current Model:** qwen2.5-coder:14b (Q4_K_M, 9GB)
@@ -178,13 +179,13 @@ PARAMETER f16_kv true         # Half-precision KV cache
 
 ### Impact Classification
 
-| Impact | Optimization | Expected Savings |
-|--------|--------------|------------------|
-| EXTREME | Keep model warm (keep_alive) | 3-4s per request |
-| HIGH | Use num_gpu=64 (fixes 94% CPU issue) | 50% speedup |
-| HIGH | Pre-warm model on startup | Eliminates cold start |
-| MEDIUM | HTTP API instead of subprocess | 200-500ms |
-| LOW | Temperature/top_k tuning | <20ms |
+| Impact  | Optimization                         | Expected Savings      |
+| ------- | ------------------------------------ | --------------------- |
+| EXTREME | Keep model warm (keep_alive)         | 3-4s per request      |
+| HIGH    | Use num_gpu=64 (fixes 94% CPU issue) | 50% speedup           |
+| HIGH    | Pre-warm model on startup            | Eliminates cold start |
+| MEDIUM  | HTTP API instead of subprocess       | 200-500ms             |
+| LOW     | Temperature/top_k tuning             | <20ms                 |
 
 ### Critical Findings
 
@@ -195,11 +196,11 @@ PARAMETER f16_kv true         # Half-precision KV cache
 
 ### Quantization Recommendations
 
-| Quantization | Size | Speed | Quality | Recommendation |
-|--------------|------|-------|---------|----------------|
-| Q4_K_M | 9GB | 47 tok/s | 96-98% | **CURRENT (optimal)** |
-| Q3_K_M | 7GB | 60 tok/s | 92-96% | For speed + quality |
-| Q2_K | 5GB | 80 tok/s | 88-92% | Max speed, lower quality |
+| Quantization | Size | Speed    | Quality | Recommendation           |
+| ------------ | ---- | -------- | ------- | ------------------------ |
+| Q4_K_M       | 9GB  | 47 tok/s | 96-98%  | **CURRENT (optimal)**    |
+| Q3_K_M       | 7GB  | 60 tok/s | 92-96%  | For speed + quality      |
+| Q2_K         | 5GB  | 80 tok/s | 88-92%  | Max speed, lower quality |
 
 ### Files Created
 
