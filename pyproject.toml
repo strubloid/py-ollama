@@ -26,8 +26,9 @@ classifiers = [
 
 [project.scripts]
 py-ollama = "cli:main"
-py-ollama-refresh = "scripts:refresh"
-py-ollama-speed = "scripts:speed"
+py-ollama-refresh = "scripts:refresh_agents"
+py-ollama-speed = "scripts:run_speed_tests"
+py-ollama-generate = "scripts:run_generate_configs"
 
 [project.optional-dependencies]
 dev = [

@@ -1,31 +1,25 @@
 """Coder preset configuration."""
 
 from dataclasses import dataclass
+from ai.config.config_loader import get_preset
 
 
 @dataclass(frozen=True)
 class CoderPreset:
     name: str = "Coder"
-    config: str = """PARAMETER num_ctx 512
-PARAMETER num_predict 16
-PARAMETER temperature 0.0
-PARAMETER top_p 1.0
-PARAMETER top_k 1
-PARAMETER repeat_penalty 1.0
-PARAMETER repeat_last_n 0
-PARAMETER seed 42
-PARAMETER num_gpu 128
-PARAMETER num_batch 512
-PARAMETER use_mlock true
-PARAMETER use_mmap true
-PARAMETER f16_kv true
-PARAMETER stop []"""
-    system: str = """Expert coding agent. Core: correct, efficient, production-ready code.
-1. Read code completely first.
-2. Plan ALL changes—no partial fixes.
-3. Execute complete solution.
-4. Validate: compile, lint, test.
-Report what changed. Never claim success unless working."""
+    config: str = ""
+    system: str = ""
 
 
-CODER = CoderPreset()
+def _load_coder() -> CoderPreset:
+    preset_data = get_preset("coder")
+    if preset_data:
+        return CoderPreset(
+            name=preset_data.get("name", "Coder"),
+            config=preset_data.get("config", ""),
+            system=preset_data.get("system", ""),
+        )
+    return CoderPreset()
+
+
+CODER = _load_coder()

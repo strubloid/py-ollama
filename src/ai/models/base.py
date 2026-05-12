@@ -1,4 +1,5 @@
 from ..config import ModelConfig
+from ..config.config_loader import get_model_params, get_system_prompt, config_to_string
 
 """Build a config string with parameters ordered by importance."""
 def _build_config(
@@ -40,162 +41,41 @@ def _build_config(
     return "\n".join(lines)
 
 
-NORMAL_CONFIG = _build_config(
-    num_ctx=256,
-    num_predict=4,
-    temperature=0.0,
-    top_p=1.0,
-    top_k=1,
-    repeat_penalty=1.0,
-    repeat_last_n=0,
-    seed=42,
-    stop=[],
-    num_gpu=128,
-    num_batch=512,
-    use_mlock=True,
-    use_mmap=True,
-    f16_kv=True,
-)
+def _get_config(mode: str) -> tuple[str, str]:
+    """Get config string and system prompt for a mode from config files."""
+    params = get_model_params(mode)
+    system = get_system_prompt(mode)
 
-CODER_CONFIG = _build_config(
-    num_ctx=512,
-    num_predict=16,
-    temperature=0.0,
-    top_p=1.0,
-    top_k=1,
-    repeat_penalty=1.0,
-    repeat_last_n=0,
-    seed=42,
-    stop=[],
-    num_gpu=128,
-    num_batch=512,
-    use_mlock=True,
-    use_mmap=True,
-    f16_kv=True,
-)
+    if params:
+        config_str = config_to_string(params)
+    else:
+        config_str = _build_config(
+            num_ctx=256,
+            num_predict=32,
+            temperature=0.0,
+            top_p=1.0,
+            top_k=1,
+            repeat_penalty=1.0,
+            repeat_last_n=0,
+            seed=42,
+            stop=[],
+            num_gpu=64,
+            num_batch=512,
+            use_mlock=True,
+            use_mmap=True,
+            f16_kv=True,
+        )
 
-CODER_FAST_CONFIG = _build_config(
-    num_ctx=128,
-    num_predict=4,
-    temperature=0.0,
-    top_p=1.0,
-    top_k=1,
-    repeat_penalty=1.0,
-    repeat_last_n=0,
-    seed=42,
-    stop=[],
-    num_gpu=128,
-    num_batch=512,
-    use_mlock=True,
-    use_mmap=True,
-    f16_kv=True,
-)
+    if not system:
+        system = "You are a helpful AI assistant."
 
-EXPLAINED_CONFIG = _build_config(
-    num_ctx=512,
-    num_predict=16,
-    temperature=0.1,
-    top_p=0.9,
-    top_k=5,
-    repeat_penalty=1.0,
-    repeat_last_n=0,
-    seed=42,
-    stop=[],
-    num_gpu=128,
-    num_batch=512,
-    use_mlock=True,
-    use_mmap=True,
-    f16_kv=True,
-)
-
-NORMAL_SYSTEM = """You are an autonomous general-purpose AI agent.
-
-Execute tasks efficiently with minimal explanation unless requested.
-
-Prioritize action: read context, plan briefly, execute immediately.
-Break complex work into manageable steps.
-Use tools to inspect, verify, and understand actual system state.
-Never assume—always read files and inspect context before deciding.
-For tool calls: be specific with paths and parameters.
-
-Complete solutions end-to-end without handoffs mid-task.
-When uncertain, use tools to gather information before proceeding.
-Track progress: note what you have completed and what remains.
-Adapt strategy based on results—adjust if initial approach fails.
-Provide clear, factual explanations only for non-obvious decisions.
-
-Success means: task complete, validated, and verified."""
+    return config_str, system
 
 
-CODER_CONFIG = _build_config(
-    num_ctx=512,
-    num_predict=16,
-    temperature=0.0,
-    top_p=1.0,
-    top_k=1,
-    repeat_penalty=1.0,
-    repeat_last_n=0,
-    seed=42,
-    stop=[],
-    num_gpu=128,
-    num_batch=512,
-    use_mlock=True,
-    use_mmap=True,
-    f16_kv=True,
-)
-
-CODER_SYSTEM = """Expert coding agent. Core: correct, efficient, production-ready code.
-1. Read code completely first.
-2. Plan ALL changes—no partial fixes.
-3. Execute complete solution.
-4. Validate: compile, lint, test.
-Report what changed. Never claim success unless working."""
-
-
-CODER_FAST_CONFIG = _build_config(
-    num_ctx=128,
-    num_predict=4,
-    temperature=0.0,
-    top_p=1.0,
-    top_k=1,
-    repeat_penalty=1.0,
-    repeat_last_n=0,
-    seed=42,
-    stop=[],
-    num_gpu=128,
-    num_batch=512,
-    use_mlock=True,
-    use_mmap=True,
-    f16_kv=True,
-)
-
-CODER_FAST_SYSTEM = """Quick coding assistant. Correctness first. Minimal changes. No invented APIs. Provide working code only."""
-
-
-EXPLAINED_CONFIG = _build_config(
-    num_ctx=512,
-    num_predict=16,
-    temperature=0.1,
-    top_p=0.9,
-    top_k=5,
-    repeat_penalty=1.0,
-    repeat_last_n=0,
-    seed=42,
-    stop=[],
-    num_gpu=128,
-    num_batch=512,
-    use_mlock=True,
-    use_mmap=True,
-    f16_kv=True,
-)
-
-EXPLAINED_SYSTEM = """Coding teacher. For each task:
-1. Explain problem and assumptions.
-2. Walk through approach with trade-offs.
-3. Show code with reasoning.
-4. Note edge cases and testing.
-
-Be concise but thorough."""
+NORMAL_CONFIG, NORMAL_SYSTEM = _get_config("normal")
+CODER_CONFIG, CODER_SYSTEM = _get_config("coder")
+CODER_FAST_CONFIG, CODER_FAST_SYSTEM = _get_config("coder_fast")
+EXPLAINED_CONFIG, EXPLAINED_SYSTEM = _get_config("explained")
 
 
 """Base class for model family behavior."""
@@ -204,19 +84,19 @@ class BaseModelFamily:
     modes = ("normal", "coder", "coder_fast", "explained")
     family_name: str = ""
     model_name: str = ""
-    
+
     """Collect all available mode configurations."""
     def get_all(self, custom_name: str = "") -> dict[str, ModelConfig]:
         return {
             mode: getattr(self, mode)(custom_name)
             for mode in self.modes
         }
-    
+
     """Return the model's assigned name with instruction to use it."""
     def getModelName(self, custom_name: str = "") -> str:
         name = custom_name if custom_name else self.model_name
         return f"Identity: You are {name}. Always identify yourself by this name when asked."
-    
+
     """Return general model-specific profile. Override in subclasses."""
     def model_profile(self) -> str:
         return ""

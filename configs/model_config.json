@@ -1,0 +1,159 @@
+{
+    "metadata": {
+        "version": "1.0.0",
+        "description": "Auto-generated config for NVIDIA GeForce RTX 4070 Ti",
+        "last_updated": "2026-05-12 15:59:12",
+        "hardware_tier": "medium",
+        "recommended_model": "qwen2.5-coder:14b"
+    },
+    "model_params": {
+        "normal": {
+            "name": "Normal",
+            "description": "Default configuration for general tasks",
+            "num_ctx": 512,
+            "num_predict": 64,
+            "num_gpu": 64,
+            "num_batch": 512,
+            "temperature": 0.1,
+            "top_p": 1.0,
+            "top_k": 1,
+            "repeat_penalty": 1.0,
+            "repeat_last_n": 0,
+            "seed": 42,
+            "use_mlock": true,
+            "use_mmap": true,
+            "f16_kv": true
+        },
+        "coder": {
+            "name": "Coder",
+            "description": "Configuration optimized for code generation",
+            "num_ctx": 1024,
+            "num_predict": 128,
+            "num_gpu": 64,
+            "num_batch": 512,
+            "temperature": 0.1,
+            "top_p": 1.0,
+            "top_k": 1,
+            "repeat_penalty": 1.0,
+            "repeat_last_n": 0,
+            "seed": 42,
+            "use_mlock": true,
+            "use_mmap": true,
+            "f16_kv": true
+        },
+        "coder_fast": {
+            "name": "Coder Fast",
+            "description": "Fast configuration for quick coding tasks",
+            "num_ctx": 256,
+            "num_predict": 32,
+            "num_gpu": 64,
+            "num_batch": 512,
+            "temperature": 0.1,
+            "top_p": 1.0,
+            "top_k": 1,
+            "repeat_penalty": 1.0,
+            "repeat_last_n": 0,
+            "seed": 42,
+            "use_mlock": true,
+            "use_mmap": true,
+            "f16_kv": true
+        },
+        "explained": {
+            "name": "Explained",
+            "description": "Configuration with detailed explanations",
+            "num_ctx": 512,
+            "num_predict": 128,
+            "num_gpu": 64,
+            "num_batch": 512,
+            "temperature": 0.1,
+            "top_p": 1.0,
+            "top_k": 1,
+            "repeat_penalty": 1.0,
+            "repeat_last_n": 0,
+            "seed": 42,
+            "use_mlock": true,
+            "use_mmap": true,
+            "f16_kv": true
+        }
+    },
+    "system_prompts": {
+        "normal": "You are a helpful assistant. Answer concisely and accurately.",
+        "coder": "You are an expert coding assistant. Provide clean, efficient code.",
+        "coder_fast": "Quick coding assistant. Correctness first. Minimal explanation.",
+        "explained": "You are a coding teacher. Explain thoroughly with examples."
+    },
+    "benchmarks": [
+        {
+            "model": "qwen2.5-coder:7b",
+            "status": "success",
+            "tokens_per_second": 0,
+            "tokens_generated": 5,
+            "benchmark_time": 0.4274717419903027,
+            "quantization": "unknown",
+            "error": ""
+        },
+        {
+            "model": "test_gpu_model:latest",
+            "status": "success",
+            "tokens_per_second": 0,
+            "tokens_generated": 3,
+            "benchmark_time": 17.06052168099268,
+            "quantization": "unknown",
+            "error": ""
+        },
+        {
+            "model": "qwen2.5-coder:14b",
+            "status": "success",
+            "tokens_per_second": 0,
+            "tokens_generated": 5,
+            "benchmark_time": 4.722942359992885,
+            "quantization": "unknown",
+            "error": ""
+        },
+        {
+            "model": "rafael:latest",
+            "status": "success",
+            "tokens_per_second": 0,
+            "tokens_generated": 5,
+            "benchmark_time": 0.5740608280029846,
+            "quantization": "unknown",
+            "error": ""
+        },
+        {
+            "model": "devstral:latest",
+            "status": "success",
+            "tokens_per_second": 0,
+            "tokens_generated": 22,
+            "benchmark_time": 23.945240075991023,
+            "quantization": "unknown",
+            "error": ""
+        },
+        {
+            "model": "gemma4:e4b",
+            "status": "success",
+            "tokens_per_second": 0,
+            "tokens_generated": 1,
+            "benchmark_time": 16.688310569006717,
+            "quantization": "unknown",
+            "error": ""
+        },
+        {
+            "model": "gemma4:26b",
+            "status": "success",
+            "tokens_per_second": 0,
+            "tokens_generated": 33,
+            "benchmark_time": 18.969688682991546,
+            "quantization": "unknown",
+            "error": ""
+        },
+        {
+            "model": "qwen3.5:latest",
+            "status": "success",
+            "tokens_per_second": 0,
+            "tokens_generated": 87,
+            "benchmark_time": 15.159111506989575,
+            "quantization": "unknown",
+            "error": ""
+        }
+    ]
+}
