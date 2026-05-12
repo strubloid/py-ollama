@@ -1,25 +1,19 @@
 import re
 
-"""
-Detect model family from model name.
 
-Args:
-    model_name: Model name (e.g., 'llama2:latest', 'deepseek-coder')
-
-Returns:
-    Model family name (lowercase)
-"""
 def detect_model_family(model_name: str) -> str:
-    
+
     name = model_name.lower().split(':')[0]
 
     patterns = {
         'llama': r'llama',
         'deepseek': r'deepseek',
         'qwen': r'qwen',
+        'qwen3': r'qwen3',
         'gemma': r'gemma',
-        'mistral': r'mistral',
+        'mistral': r'mistral|ministral',
         'devstral': r'devstral',
+        'granite': r'granite',
     }
 
     for family, pattern in patterns.items():

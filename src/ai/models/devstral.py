@@ -1,11 +1,11 @@
-"""Mistral model family."""
+"""Devstral model family."""
 
 from .base import BaseModelFamily, NORMAL_SYSTEM, CODER_SYSTEM, CODER_FAST_SYSTEM, EXPLAINED_SYSTEM
 
 
-class Mistral(BaseModelFamily):
-    family_name = "mistral"
-    model_name = "mlk"
+class Devstral(BaseModelFamily):
+    family_name = "devstral"
+    model_name = "devstral:latest"
 
     def normal(self, custom_name: str = "") -> dict:
         system = self.getModelName(custom_name) + "\n" + NORMAL_SYSTEM
@@ -36,4 +36,4 @@ class Mistral(BaseModelFamily):
         }
 
 
-__all__ = ["Mistral"]
+__all__ = ["Devstral"]

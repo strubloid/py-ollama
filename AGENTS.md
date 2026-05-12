@@ -60,7 +60,9 @@ src/
 │   │   ├── base.py
 │   │   ├── deepseek.py
 │   │   ├── default.py
+│   │   ├── devstral.py
 │   │   ├── gemma.py
+│   │   ├── granite.py
 │   │   ├── llama.py
 │   │   ├── mistral.py
 │   │   └── qwen.py
@@ -90,6 +92,7 @@ src/
 │   └── default_helpers.py
 ├── scripts
 │   ├── __init__.py
+│   ├── bench.py
 │   ├── generate.py
 │   ├── refresh.py
 │   ├── speed.py
@@ -127,7 +130,7 @@ Each package follows these rules:
 
 ### Configuration System
 
-- Each model family (Llama, Deepseek, Qwen, Gemma, Mistral, Default) has: `normal`, `coder`, `coder_fast`, `explained`
+- Each model family (Llama, Deepseek, Qwen, Gemma, Mistral, Granite, Devstral, Default) has: `normal`, `coder`, `coder_fast`, `explained`
 - Models use extensions for customizable behavior (via `_build_system` method)
 - Extensions follow `BaseExtension` abstract class with: `get_normal()`, `get_coder()`, `get_coder_fast()`, `get_explained()`
 - `get_configs_for_model()` merges base configs with presets
