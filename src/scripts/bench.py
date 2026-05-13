@@ -32,7 +32,7 @@ console = Console()
 
 
 def load_config() -> dict:
-    config_path = Path(__file__).parent.parent.parent / "speed.config.json"
+    config_path = Path(__file__).parent.parent.parent / "configs" / "speed.config.json"
     if config_path.exists():
         with open(config_path) as f:
             return json.load(f)

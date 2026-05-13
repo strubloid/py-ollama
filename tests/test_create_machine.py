@@ -8,7 +8,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-CONFIG_FILE = Path(__file__).parent.parent / "speed.config.json"
+CONFIG_FILE = Path(__file__).parent.parent / "configs" / "speed.config.json"
 TEST_MODEL = "qwen2.5-coder:14b"
 WARMUP_PROMPT = "hi"
 CREATED_MODELS: list[str] = []
